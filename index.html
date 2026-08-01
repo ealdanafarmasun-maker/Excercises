@@ -316,6 +316,7 @@ footer p{margin:0 0 6px}
       <button class="mini" id="btnFile"></button>
       <button class="mini" id="btnGh"></button>
       <input type="file" id="fileIn" accept=".json,application/json" hidden>
+      <button class="mini" id="btnUncache" hidden></button>
       <span class="mediaset">
         <span style="color:var(--zinc);font-size:11.5px;font-weight:600">GIF</span>
         <button class="mini" data-media="off" aria-pressed="true">Off</button>
@@ -489,7 +490,7 @@ const LANGS = [["es","Español"],["en","English"],["it","Italiano"],["tr","Türk
   ["zh","中文"],["hi","हिन्दी"],["pl","Polski"],["ko","한국어"],["fr","Français"]];
 
 const T = {
- es:{search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
+ es:{cached:"Dataset guardado en el móvil",uncache:"Vaciar",uncached:"Caché vaciada", search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
   sort_id:"Orden: ID",sort_az:"Orden: A–Z",clear:"Limpiar",of:"de",results:"resultados",more:"Cargar más",
   none:"Sin resultados",none_h:"Prueba con otro término o quita algún filtro.",
   explore:"Explorar",routines:"Rutinas",setup:"Setup",steps:"Instrucciones paso a paso",
@@ -507,7 +508,7 @@ const T = {
   moved:"Movido a",removed:"Eliminado",dsaved:"Guardado",confirm:"¿Seguro?",
   addhere:"Añadir a la rutina",days:"días",lastup:"Actualizada",nostore:"Sin almacenamiento: las rutinas no se guardarán al cerrar.",
   stored:"Rutinas guardadas en este dispositivo.",noex:"(no cargado)"},
- en:{search:"Search exercises…",filters:"Filters",equip:"Equipment",all_tg:"All target muscles",favs:"Favorites",
+ en:{cached:"Dataset saved on this device",uncache:"Clear",uncached:"Cache cleared", search:"Search exercises…",filters:"Filters",equip:"Equipment",all_tg:"All target muscles",favs:"Favorites",
   sort_id:"Sort: ID",sort_az:"Sort: A–Z",clear:"Clear",of:"of",results:"results",more:"Load more",
   none:"No results",none_h:"Try another term or drop a filter.",
   explore:"Browse",routines:"Routines",setup:"Setup",steps:"Step-by-step instructions",
@@ -525,7 +526,7 @@ const T = {
   moved:"Moved to",removed:"Removed",dsaved:"Saved",confirm:"Are you sure?",
   addhere:"Add to routine",days:"days",lastup:"Updated",nostore:"No storage: routines won't persist.",
   stored:"Routines saved on this device.",noex:"(not loaded)"},
- it:{search:"Cerca esercizi…",filters:"Filtri",equip:"Attrezzatura",all_tg:"Tutti i muscoli",favs:"Preferiti",
+ it:{cached:"Dataset salvato sul dispositivo",uncache:"Svuota",uncached:"Cache svuotata", search:"Cerca esercizi…",filters:"Filtri",equip:"Attrezzatura",all_tg:"Tutti i muscoli",favs:"Preferiti",
   sort_id:"Ordine: ID",sort_az:"Ordine: A–Z",clear:"Pulisci",of:"di",results:"risultati",more:"Carica altri",
   none:"Nessun risultato",none_h:"Prova un altro termine o togli un filtro.",
   explore:"Esplora",routines:"Schede",setup:"Setup",steps:"Istruzioni passo passo",
@@ -543,7 +544,7 @@ const T = {
   moved:"Spostato in",removed:"Rimosso",dsaved:"Salvato",confirm:"Sei sicuro?",
   addhere:"Aggiungi alla scheda",days:"giorni",lastup:"Aggiornata",nostore:"Nessuna memoria: le schede non verranno salvate.",
   stored:"Schede salvate su questo dispositivo.",noex:"(non caricato)"},
- tr:{search:"Egzersiz ara…",filters:"Filtreler",equip:"Ekipman",all_tg:"Tüm kaslar",favs:"Favoriler",
+ tr:{cached:"Veri seti cihaza kaydedildi",uncache:"Temizle",uncached:"Önbellek temizlendi", search:"Egzersiz ara…",filters:"Filtreler",equip:"Ekipman",all_tg:"Tüm kaslar",favs:"Favoriler",
   sort_id:"Sıralama: ID",sort_az:"Sıralama: A–Z",clear:"Temizle",of:"/",results:"sonuç",more:"Daha fazla",
   none:"Sonuç yok",none_h:"Başka bir terim dene veya filtreyi kaldır.",
   explore:"Keşfet",routines:"Programlar",setup:"Kurulum",steps:"Adım adım talimatlar",
@@ -561,7 +562,7 @@ const T = {
   moved:"Taşındı:",removed:"Kaldırıldı",dsaved:"Kaydedildi",confirm:"Emin misin?",
   addhere:"Programa ekle",days:"gün",lastup:"Güncellendi",nostore:"Depolama yok: programlar kaydedilmez.",
   stored:"Programlar bu cihazda kayıtlı.",noex:"(yüklü değil)"},
- ru:{search:"Поиск упражнений…",filters:"Фильтры",equip:"Оборудование",all_tg:"Все мышцы",favs:"Избранное",
+ ru:{cached:"Датасет сохранён на устройстве",uncache:"Очистить",uncached:"Кэш очищен", search:"Поиск упражнений…",filters:"Фильтры",equip:"Оборудование",all_tg:"Все мышцы",favs:"Избранное",
   sort_id:"Сортировка: ID",sort_az:"Сортировка: А–Я",clear:"Сброс",of:"из",results:"результатов",more:"Показать ещё",
   none:"Ничего не найдено",none_h:"Измените запрос или снимите фильтр.",
   explore:"Каталог",routines:"Программы",setup:"Настройка",steps:"Пошаговая инструкция",
@@ -579,7 +580,7 @@ const T = {
   moved:"Перенесено в",removed:"Удалено",dsaved:"Сохранено",confirm:"Уверены?",
   addhere:"Добавить в программу",days:"дней",lastup:"Обновлено",nostore:"Нет хранилища: программы не сохранятся.",
   stored:"Программы сохранены на этом устройстве.",noex:"(не загружено)"},
- zh:{search:"搜索动作…",filters:"筛选",equip:"器械",all_tg:"全部目标肌",favs:"收藏",
+ zh:{cached:"数据集已存至本机",uncache:"清除",uncached:"缓存已清除", search:"搜索动作…",filters:"筛选",equip:"器械",all_tg:"全部目标肌",favs:"收藏",
   sort_id:"排序：ID",sort_az:"排序：A–Z",clear:"清除",of:"/",results:"条结果",more:"加载更多",
   none:"没有结果",none_h:"换个关键词或去掉一个筛选条件。",
   explore:"浏览",routines:"计划",setup:"配置",steps:"分步说明",
@@ -627,6 +628,43 @@ const Store = (() => {
   }
 })();
 const K = { routines:"idx:routines", favs:"idx:favs", prefs:"idx:prefs" };
+
+/* IndexedDB para el dataset completo (17 MB: no cabe en localStorage) */
+const IDB = (() => {
+  const DB = "idx-cache", ST = "kv";
+  function open(){
+    return new Promise((res, rej) => {
+      if (!("indexedDB" in window)) return rej(new Error("sin indexedDB"));
+      const rq = indexedDB.open(DB, 1);
+      rq.onupgradeneeded = () => { const d = rq.result; if (!d.objectStoreNames.contains(ST)) d.createObjectStore(ST); };
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    });
+  }
+  return {
+    async get(k){ try{
+      const d = await open();
+      return await new Promise((res, rej) => {
+        const r = d.transaction(ST).objectStore(ST).get(k);
+        r.onsuccess = () => res(r.result ?? null); r.onerror = () => rej(r.error);
+      });
+    }catch(_){ return null; } },
+    async set(k, v){ try{
+      const d = await open();
+      return await new Promise((res, rej) => {
+        const tx = d.transaction(ST, "readwrite"); tx.objectStore(ST).put(v, k);
+        tx.oncomplete = () => res(true); tx.onerror = () => rej(tx.error);
+      });
+    }catch(_){ return false; } },
+    async del(k){ try{
+      const d = await open();
+      return await new Promise((res) => {
+        const tx = d.transaction(ST, "readwrite"); tx.objectStore(ST).delete(k);
+        tx.oncomplete = () => res(true); tx.onerror = () => res(false);
+      });
+    }catch(_){ return false; } }
+  };
+})();
 let saveTimer;
 function persist(){
   clearTimeout(saveTimer);
@@ -659,18 +697,28 @@ async function boot(){
       if (Array.isArray(j) && j.length){ adopt(j, true); return; }
     }catch(_){}
   }
+  const hit = await IDB.get("dataset");
+  if (hit && Array.isArray(hit.data) && hit.data.length){ adopt(hit.data, true, true); return; }
   adopt(DEMO, false);
 }
-function adopt(arr, full){
-  state.data = arr; state.full = full; state.shown = 60;
+/* cached=true cuando los datos vienen ya de la caché (no hay que reescribirla) */
+function adopt(arr, full, cached){
+  state.data = arr; state.full = full; state.cached = !!(full && cached); state.shown = 60;
   state.byId = new Map(arr.map(e => [e.id, e]));
   applyLang(); setSource(full ? "full" : "demo"); probeMedia();
+  if (full && !cached){
+    IDB.set("dataset", { at:Date.now(), n:arr.length, data:arr })
+       .then(ok => { if (ok){ state.cached = true; setSource("full"); } });
+  }
 }
 function setSource(kind){
   $("#srcDot").className = "dot" + (kind === "full" ? " ok" : "");
-  $("#srcText").textContent = kind === "loading" ? t("loading") : kind === "full" ? t("full")
+  $("#srcText").textContent = kind === "loading" ? t("loading")
+    : kind === "full" ? (state.cached ? t("cached") : t("full"))
     : kind === "err" ? t("err") : t("demo");
   $("#btnFile").hidden = kind === "full"; $("#btnGh").hidden = kind === "full";
+  $("#btnUncache").hidden = !(kind === "full" && state.cached);
+  $("#btnUncache").textContent = t("uncache");
 }
 $("#btnFile").onclick = () => $("#fileIn").click();
 $("#fileIn").onchange = e => {
@@ -680,6 +728,11 @@ $("#fileIn").onchange = e => {
                       catch(_){ setSource("err"); } };
   rd.onerror = () => setSource("err");
   rd.readAsText(f, "utf-8");
+};
+$("#btnUncache").onclick = async () => {
+  if (!confirm(t("confirm"))) return;
+  await IDB.del("dataset");
+  adopt(DEMO, false); toast(t("uncached"));
 };
 $("#btnGh").onclick = async e => {
   const b = e.currentTarget, old = b.textContent; b.textContent = t("loading"); b.disabled = true;
@@ -1407,6 +1460,12 @@ function renderPrompt(){
     $("#manifest").href = URL.createObjectURL(new Blob([JSON.stringify(m)], {type:"application/manifest+json"}));
   }catch(_){}
 })();
+
+/* Service worker opcional: si sw.js está junto a index.html, guarda la app y
+   los GIF para uso sin conexión. Si no existe, no pasa nada. */
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
 
 /* ==========================  INIT  ========================== */
 renderSql(); renderApi(); renderPrompt(); bindCopy();
