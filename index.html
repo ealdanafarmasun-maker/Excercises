@@ -213,6 +213,10 @@ nav.bottom svg{width:21px; height:21px}
   border-right:1px solid var(--line); color:var(--zinc); touch-action:none; cursor:grab}
 .handle:active{cursor:grabbing}
 .item .ib{flex:1; min-width:0; padding:10px 12px}
+.iopen{display:block; width:100%; text-align:left; border:0; background:transparent; padding:0; color:inherit}
+.iopen .nm{display:flex; align-items:center; gap:6px}
+.iopen .see{flex:none; width:13px; height:13px; color:var(--zinc)}
+.item .ithumb{cursor:pointer}
 .item .ib .nm{font-weight:600; font-size:14.5px; text-transform:capitalize; line-height:1.3; overflow-wrap:anywhere}
 .item .ib .sub{font-size:11.5px; color:var(--zinc); margin-top:3px; text-transform:capitalize}
 .item .ithumb{flex:none; width:46px; height:46px; align-self:center; margin-right:8px; border-radius:8px;
@@ -245,7 +249,7 @@ nav.bottom svg{width:21px; height:21px}
     width:min(680px,92vw); max-height:86vh; border-radius:18px}
   .sheet.on{transform:translate(-50%,-50%); opacity:1}
 }
-.shead{display:flex; align-items:flex-start; gap:12px; padding:16px; position:relative}
+.shead{display:flex; align-items:flex-start; gap:12px; padding:16px; position:relative; touch-action:none}
 .shead .grab{position:absolute; top:7px; left:50%; transform:translateX(-50%); width:36px; height:4px;
   border-radius:99px; background:var(--line)}
 @media (min-width:760px){ .shead .grab{display:none} }
@@ -304,6 +308,14 @@ footer p{margin:0 0 6px}
 .setbtn svg{width:12px; height:12px; flex:none}
 .setbtn.full{background:var(--teal); border-color:var(--teal); color:#fff}
 .item.complete .handle{background:var(--teal-soft); color:var(--teal); border-right-color:var(--teal)}
+.restrow{display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none;
+  margin:0 -15px 12px; padding:0 15px}
+.restrow::-webkit-scrollbar{display:none}
+.restrow .rl{flex:none; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--zinc); font-weight:700; margin-right:2px}
+.rp{flex:none; border:1px solid var(--line); background:var(--card); border-radius:9px;
+  padding:6px 11px; min-height:36px; font-family:var(--f-mono); font-size:12.5px; font-weight:600; color:var(--ink2)}
+.rp[aria-pressed="true"]{background:var(--teal); border-color:var(--teal); color:#fff}
 .dayprog{height:7px; background:var(--line2); border:1px solid var(--line); border-radius:99px;
   overflow:hidden; margin:0 0 14px}
 .dayprog i{display:block; height:100%; background:var(--teal); transition:width .3s ease}
@@ -314,8 +326,8 @@ footer p{margin:0 0 6px}
   font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em}
 .play svg{width:11px; height:11px}
 .timer{position:fixed; left:0; right:0; bottom:calc(var(--nav) + var(--sab)); z-index:70;
-  background:var(--ink); color:var(--paper); display:flex; align-items:center; gap:10px;
-  padding:11px 14px; box-shadow:var(--lift)}
+  background:var(--ink); color:var(--paper); display:flex; align-items:center; gap:6px;
+  padding:11px 12px; box-shadow:var(--lift)}
 .timer .prog{position:absolute; left:0; top:0; height:3px; background:var(--teal); transition:width .25s linear}
 .timer .tn{flex:1; min-width:0; font-size:11.5px; opacity:.72; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; text-transform:capitalize}
@@ -326,7 +338,7 @@ footer p{margin:0 0 6px}
 @keyframes pulse{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){ .timer.done .tc{animation:none} }
 .timer button{border:1px solid rgba(255,255,255,.28); background:transparent; color:inherit;
-  border-radius:9px; min-width:40px; height:38px; padding:0 9px; font-size:12.5px; font-weight:600}
+  border-radius:9px; min-width:38px; height:38px; padding:0 7px; font-size:12px; font-weight:600; flex:none}
 @media (min-width:761px){ .timer{bottom:0; left:auto; width:min(420px,92vw); right:16px; bottom:16px; border-radius:14px} }
 
 /* ---------- toast ---------- */
@@ -440,6 +452,7 @@ footer p{margin:0 0 6px}
     <p class="rmeta" id="rSub" style="margin:0 0 14px"></p>
 
     <div class="daytabs" id="daytabs"></div>
+    <div class="restrow" id="restRow"></div>
     <div class="summary" id="daySummary"></div>
     <div class="dayprog"><i id="dayProgFill" style="width:0%"></i></div>
     <p class="hint" id="dragHint"></p>
@@ -525,7 +538,8 @@ footer p{margin:0 0 6px}
     <div class="tn" id="tName"></div>
     <div class="tc" id="tClock">00:00</div>
   </div>
-  <button id="tPlus">+15</button>
+  <button data-add="15">+15</button>
+  <button data-add="30">+30</button>
   <button id="tPause" aria-label="pausa">II</button>
   <button id="tStop" aria-label="parar">×</button>
 </div>
@@ -545,7 +559,7 @@ const LOCAL_PATHS = ["data/exercises.json", "exercises.json", "./data/exercises.
 const LANG = "es";   /* la app trabaja solo en español */
 
 const T = {
- es:{setfmt:"Serie {n} de {m}",serie:"Serie",done_all:"Completo",progress:"Progreso",resetday:"Reiniciar",exdone:"Ejercicio completo",zeroed:"Series a cero",go:"Ir",ready:"¡Listo!",restlbl:"Descanso",muscle:"Músculo",cached:"Dataset guardado en el móvil",uncache:"Vaciar",uncached:"Caché vaciada", search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
+ es:{dayrest:"Descanso del día",restset:"Descanso:",backtor:"← Volver a la rutina",setfmt:"Serie {n} de {m}",serie:"Serie",done_all:"Completo",progress:"Progreso",resetday:"Reiniciar",exdone:"Ejercicio completo",zeroed:"Series a cero",go:"Ir",ready:"¡Listo!",restlbl:"Descanso",muscle:"Músculo",cached:"Dataset guardado en el móvil",uncache:"Vaciar",uncached:"Caché vaciada", search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
   sort_id:"Orden: ID",sort_az:"Orden: A–Z",clear:"Limpiar",of:"de",results:"resultados",more:"Cargar más",
   none:"Sin resultados",none_h:"Prueba con otro término o quita algún filtro.",
   explore:"Explorar",routines:"Rutinas",setup:"Setup",steps:"Instrucciones paso a paso",
@@ -728,7 +742,7 @@ function setMedia(mode, quiet){
   $$("[data-media]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.media === mode)));
   if (!quiet) persist();
   render(); if (state.view === "routines") renderRoutines();
-  if (!$("#sheet").hidden) openDetail($("#dId").textContent.replace("ID ",""));
+  if (!$("#sheet").hidden && detailId) openDetail(detailId, fromRoutine);
 }
 /* Local si las carpetas están junto al archivo; si no, CDN si hay red. */
 function probeMedia(){
@@ -874,7 +888,7 @@ function addToRoutine(exId){
   let r = getR();
   if (!r) r = newRoutine();
   const d = r.days[Math.min(state.curD, r.days.length-1)] || r.days[0];
-  d.items.push({ uid:uid(), ex:exId, sets:3, reps:10, rest:90, done:0 });
+  d.items.push({ uid:uid(), ex:exId, sets:3, reps:10, rest:(+d.rest || 90), done:0 });
   touch(); syncTargetBar();
   const ex = state.byId.get(exId);
   toast(t("added") + " " + d.name + (ex ? " · " + ex.name : ""));
@@ -935,6 +949,25 @@ function renderEditor(){
     '<span class="dn">'+day.items.length+' '+esc(t("exs"))+'</span></button>').join("");
   $$("#daytabs .daytab").forEach(b => b.onclick = () => { state.curD = +b.dataset.day; persist(); renderEditor(); });
 
+  /* Descanso del día: un toque lo aplica a todos los ejercicios y queda como
+     valor por defecto para los que añadas después. */
+  const PRESETS = [45, 60, 90, 120, 180];
+  const rests = d.items.map(i => +i.rest || 0);
+  /* Solo se marca un preset si TODOS los ejercicios comparten ese descanso.
+     Si hay valores mezclados no se marca ninguno, para no mentir. */
+  const comun = rests.length
+    ? (rests.every(v => v === rests[0]) ? rests[0] : null)
+    : (+d.rest || null);
+  $("#restRow").innerHTML =
+    '<span class="rl">' + esc(t("dayrest")) + '</span>' +
+    PRESETS.map(v => '<button class="rp" data-rp="'+v+'" aria-pressed="'+(comun === v)+'">'+v+'s</button>').join("");
+  $$("#restRow [data-rp]").forEach(b => b.onclick = () => {
+    const v = +b.dataset.rp;
+    d.rest = v; d.items.forEach(i => i.rest = v);
+    touch(); renderEditor();
+    toast(t("restset") + " " + v + "s" + (d.items.length ? " · " + d.items.length + " " + t("exs") : ""));
+  });
+
   const bySets = {};
   d.items.forEach(i => { const ex = exOf(i); if (!ex) return;
     const k = ex.body_part || ex.category; bySets[k] = (bySets[k]||0) + (+i.sets||0); });
@@ -959,21 +992,30 @@ function renderEditor(){
     return '<div class="item'+(nsets && ndone >= nsets ? " complete" : "")+'" data-uid="'+i.uid+'">'+
       '<div class="handle" data-drag="'+i.uid+'" aria-label="drag">'+
         '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></div>'+
-      '<div class="ib"><div class="nm">'+esc(name)+'</div><div class="sub">'+esc(sub)+'</div>'+
+      '<div class="ib">' +
+        (ex ? '<button class="iopen" data-open="'+esc(ex.id)+'">' : '<div>') +
+          '<div class="nm">'+esc(name)+
+            (ex ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>' : '')+
+          '</div>'+
+          '<div class="sub">'+esc(sub)+'</div>' +
+        (ex ? '</button>' : '</div>') +
         '<div class="setrow">'+
           numBox(t("sets"), i.uid, "sets", i.sets) + numBox(t("reps"), i.uid, "reps", i.reps) + numBox(t("rest"), i.uid, "rest", i.rest) +
         '</div>' + setButton(i) + '</div>'+
-      (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" onerror="this.remove()">' : "")+
+      (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" data-open="'+esc(ex ? ex.id : "")+'" onerror="this.remove()">' : "")+
       '<button class="irm" data-rm="'+i.uid+'" aria-label="x">×</button></div>';
   }).join("");
   $$("#items [data-set]").forEach(b => b.onclick = () => tapSet(b.dataset.set));
+  $$("#items [data-open]").forEach(b => b.onclick = () => { if (b.dataset.open) openDetail(b.dataset.open, true); });
   $$("#items [data-rm]").forEach(b => b.onclick = () => {
     d.items = d.items.filter(x => x.uid !== b.dataset.rm); touch(); renderEditor(); toast(t("removed"));
   });
   $$("#items input[data-f]").forEach(inp => inp.onchange = () => {
     const it = d.items.find(x => x.uid === inp.dataset.i); if (!it) return;
     it[inp.dataset.f] = Math.max(0, parseInt(inp.value,10) || 0); touch();
-    if (inp.dataset.f === "sets"){ it.done = Math.min(+it.done || 0, it.sets); touch(); renderEditor(); }
+    if (inp.dataset.f === "sets"){ it.done = Math.min(+it.done || 0, it.sets); touch(); }
+    /* series y descanso cambian el resumen y los presets del día: repintar */
+    if (inp.dataset.f === "sets" || inp.dataset.f === "rest") renderEditor();
   });
   attachDrag();
   $("#btnAddEx").textContent = t("addex");
@@ -1262,12 +1304,15 @@ function persistTimer(){
   Store.set("idx:timer", timer && !timer.done ? timer : null);
 }
 $("#tStop").onclick = stopRest;
-$("#tPlus").onclick = () => {
+$$("#timerBar [data-add]").forEach(b => b.onclick = () => {
   if (!timer) return;
-  if (timer.done){ timer.done = false; $("#timerBar").classList.remove("done"); timer.end = Date.now(); }
-  if (timer.left !== null) timer.left += 15000; else timer.end += 15000;
-  timer.total += 15000; persistTimer(); runTimer();
-};
+  const ms = (+b.dataset.add) * 1000;
+  if (timer.done){                      // reanuda desde cero si ya había terminado
+    timer.done = false; $("#timerBar").classList.remove("done"); timer.end = Date.now();
+  }
+  if (timer.left !== null) timer.left += ms; else timer.end += ms;
+  timer.total += ms; persistTimer(); runTimer();
+});
 $("#tPause").onclick = () => {
   if (!timer || timer.done) return;
   if (timer.left === null){ timer.left = timer.end - Date.now(); keepAwake(false); }
@@ -1278,8 +1323,9 @@ $("#tPause").onclick = () => {
 document.addEventListener("visibilitychange", () => { if (!document.hidden && timer) paint(); });
 
 /* ==========================  FICHA  ========================== */
-let lastFocus = null, detailId = null;
-function openDetail(id){
+let lastFocus = null, detailId = null, fromRoutine = false;
+function openDetail(id, desdeRutina){
+  fromRoutine = !!desdeRutina;
   const x = state.byId.get(id); if (!x) return;
   detailId = id; lastFocus = document.activeElement;
   $("#dId").textContent = "ID " + x.id;
@@ -1301,7 +1347,7 @@ function openDetail(id){
     '<h4 class="sec">'+esc(t("media"))+'</h4><dl class="kv">' +
       row("media_id", x.media_id, true) + row("image", x.image, true) +
       row("gif_url", x.gif_url, true) + row("attribution", x.attribution, true) + '</dl>';
-  $("#dAdd").textContent = t("addhere");
+  $("#dAdd").textContent = fromRoutine ? t("backtor") : t("addhere");
   bindCopy();
   $("#sheet").hidden = false;
   requestAnimationFrame(() => { $("#sheet").classList.add("on"); $("#scrim").classList.add("on"); });
@@ -1315,8 +1361,36 @@ function closeDetail(){
 }
 $("#dClose").onclick = closeDetail;
 $("#scrim").onclick = closeDetail;
-$("#dAdd").onclick = () => { if (detailId){ addToRoutine(detailId); closeDetail(); } };
+$("#dAdd").onclick = () => {
+  if (fromRoutine) return closeDetail();          // solo volver, no duplicar
+  if (detailId){ addToRoutine(detailId); closeDetail(); }
+};
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#sheet").hidden) closeDetail(); });
+
+/* En móvil, la barra superior de la ficha se puede arrastrar hacia abajo
+   para cerrarla, que es lo que sugiere el tirador. */
+(function sheetSwipe(){
+  const sheet = $("#sheet"), head = document.querySelector(".shead");
+  let sy = 0, dy = 0, on = false;
+  head.addEventListener("pointerdown", e => {
+    if (e.target.closest("button") || innerWidth >= 760) return;
+    on = true; sy = e.clientY; dy = 0;
+    sheet.style.transition = "none";
+    try{ head.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  head.addEventListener("pointermove", e => {
+    if (!on) return;
+    dy = Math.max(0, e.clientY - sy);
+    sheet.style.transform = "translateY(" + dy + "px)";
+  });
+  const fin = () => {
+    if (!on) return;
+    on = false; sheet.style.transition = ""; sheet.style.transform = "";
+    if (dy > 90) closeDetail();
+  };
+  head.addEventListener("pointerup", fin);
+  head.addEventListener("pointercancel", fin);
+})();
 
 function bindCopy(){
   $$(".copy").forEach(b => b.onclick = async () => {
@@ -1362,7 +1436,7 @@ function applyLang(){
   $("#storeInfo").textContent = Store.kind === "memory" ? t("nostore") : t("stored");
   setSource(state.full ? "full" : "demo");
   buildFilters(); render(); renderRoutines(); renderSql();
-  if (!$("#sheet").hidden && detailId) openDetail(detailId);
+  if (!$("#sheet").hidden && detailId) openDetail(detailId, fromRoutine);
 }
 
 /* ==========================  SETUP  ========================== */
