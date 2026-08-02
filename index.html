@@ -197,6 +197,7 @@ nav.bottom svg{width:21px; height:21px}
 .rcard h3{font-size:16.5px}
 .rmeta{font-family:var(--f-mono); font-size:11.5px; color:var(--zinc)}
 .rcard .row{display:flex; gap:6px; flex-wrap:wrap; margin-top:auto}
+.rcard .row .btn{flex:1 1 auto; min-width:82px; text-align:center; justify-content:center}
 .daytabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:0 -15px 12px; padding:2px 15px 8px}
 .daytabs::-webkit-scrollbar{display:none}
 .daytab{flex:none; border:1px solid var(--line); background:var(--card); border-radius:11px; padding:8px 13px;
@@ -224,7 +225,13 @@ nav.bottom svg{width:21px; height:21px}
 .item .ib .last{font-family:var(--f-mono); font-size:11px; color:var(--accent); margin-top:3px}
 .item .ithumb{flex:none; width:46px; height:46px; align-self:center; margin-right:8px; border-radius:8px;
   object-fit:contain; background:var(--line2); border:1px solid var(--line)}
-.item .irm{flex:none; border:0; background:transparent; color:var(--zinc); width:42px; font-size:18px}
+/* La × era un botón que, con align-items:stretch, ocupaba TODO el alto de la
+   fila: una franja vertical de 42 px que se pulsaba sola al hacer scroll o al ir
+   a la casilla de kilos. Ahora es un cuadrado arriba a la derecha, con espacio
+   muerto alrededor que no borra nada. */
+.item .irmwrap{flex:none; width:44px; display:flex; align-items:flex-start; justify-content:center; padding-top:6px}
+.item .irm{width:34px; height:34px; border:0; border-radius:9px; background:transparent;
+  color:var(--zinc); font-size:19px; line-height:1; display:grid; place-items:center}
 .setrow{display:flex; gap:6px; padding:0 12px 10px; flex-wrap:wrap}
 .num{display:flex; align-items:center; gap:5px; background:var(--line2); border:1px solid var(--line);
   border-radius:8px; padding:3px 7px}
@@ -272,6 +279,7 @@ nav.bottom svg{width:21px; height:21px}
 .sbody{overflow-y:auto; padding:0 16px 24px; -webkit-overflow-scrolling:touch}
 .sfoot{border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:8px}
 .sfoot .btn{flex:1}
+.sfoot .btn.ghost{flex:0 0 auto}
 .gifwrap{margin:12px 0 18px; border:1px solid var(--line); border-radius:14px; background:var(--line2); padding:14px; text-align:center}
 .gifwrap img{width:min(230px,68%); aspect-ratio:1; object-fit:contain; border-radius:10px; background:#fff; display:block; margin:0 auto}
 .gifwrap .cap{display:block; margin-top:9px; font-size:11px; color:var(--zinc); font-family:var(--f-mono)}
@@ -356,6 +364,73 @@ footer p{margin:0 0 6px}
   border-radius:9px; min-width:38px; height:38px; padding:0 7px; font-size:12px; font-weight:600; flex:none}
 @media (min-width:761px){ .timer{bottom:0; left:auto; width:min(420px,92vw); right:16px; bottom:16px; border-radius:14px} }
 
+/* ==========================================================================
+   RESPUESTA TÁCTIL
+   La hoja desactiva arriba el resaltado nativo del navegador
+   (-webkit-tap-highlight-color:transparent) para controlar el aspecto, pero
+   hasta ahora no lo sustituía por nada: tocabas un botón y la pantalla no
+   acusaba recibo hasta que terminaba el JavaScript. Aunque la acción tarde
+   30 ms, sin confirmación visual inmediata se siente muerta.
+   ========================================================================== */
+
+/* Todo lo pulsable responde al instante. 90 ms es lo bastante rápido para
+   leerse como inmediato y lo bastante largo para verse en un toque corto. */
+button, .chip, .pill, .qchip, .daytab, .rp, .kbtn, [role="button"]{
+  touch-action:manipulation;          /* nada de esperar por un doble toque */
+  -webkit-user-select:none; user-select:none;   /* pulsación larga = pulsar, no seleccionar */
+  transition:transform .09s ease, background-color .09s ease, border-color .09s ease;
+}
+button:active, .chip:active, .pill:active, .qchip:active,
+.daytab:active, .rp:active, .kbtn:active{
+  transform:scale(.96);
+}
+/* Además del hundido, un cambio de fondo: en los botones grandes el escalado
+   solo no se aprecia. */
+.btn:active{filter:brightness(.88)}
+.mini:active, .chip:active, .pill:active, .qchip:active, .rp:active,
+.kbtn:active, .daytab:active, .iact:active, .close:active{
+  background:var(--line2); border-color:var(--accent)
+}
+.setbtn:active{transform:scale(.985); filter:brightness(.94)}
+.irm:active, .xbtn:active{transform:scale(.85); color:var(--red)}
+nav.bottom button:active{transform:scale(.92)}
+.card .open:active h3{color:var(--accent)}
+.item .iopen:active .nm{color:var(--accent)}
+.handle:active{cursor:grabbing; background:var(--accent-soft); color:var(--accent)}
+
+@media (prefers-reduced-motion:reduce){
+  button, .chip, .pill, .qchip, .daytab, .rp, .kbtn, [role="button"]{transition:none}
+  button:active, .chip:active, .pill:active, .qchip:active,
+  .daytab:active, .rp:active, .kbtn:active, .setbtn:active,
+  .irm:active, .xbtn:active, nav.bottom button:active{transform:none}
+}
+
+/* En pantalla táctil, todo lo pulsable llega a 44 px: es la medida a la que
+   se deja de fallar el toque con el pulgar. En ratón no cambia nada. */
+@media (pointer:coarse){
+  .mini, .chip, .pill, .qchip, .rp, .kbtn, .daytab, .btn{min-height:44px}
+  .mediaset .mini{min-height:40px}
+  .iact{width:44px; height:44px}
+  .sheet .close{width:44px; height:44px; font-size:19px}
+  .item .irm{width:48px; font-size:20px}
+  .xbtn{padding:11px; min-width:44px}
+  /* iOS hace zoom al enfocar un input de menos de 16px: justo por debajo del
+     umbral el móvil se reencuadra solo cada vez que tocas una casilla. */
+  .num input{padding:9px 0; font-size:16px}
+  .num.pace input, .num.kg input{font-size:16px}
+  .field input, .sel, select{font-size:16px; min-height:44px}
+  .handle{width:48px}
+  .setbtn{min-height:52px}
+  nav.bottom button{min-height:56px}
+  .timer button{min-width:44px; min-height:44px}
+}
+
+/* Los carruseles horizontales ya no arrastran la página al deslizarlos, y
+   tienen inercia en iOS. */
+.idx, .daytabs, .quick, .pills{
+  overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+}
+
 /* ---------- búsquedas rápidas ---------- */
 .quick{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;
   margin:0 -15px 4px; padding:2px 15px 10px}
@@ -375,12 +450,99 @@ footer p{margin:0 0 6px}
 .hcard .hrow span{flex:none; font-family:var(--f-mono); font-size:11.5px; color:var(--zinc)}
 .hcard .hdel{margin-top:9px}
 
+/* ---------- correr ----------
+   La tarjeta es la sesión entera: cabecera, gráfico y tabla de tramos, todo
+   editable en sitio. Se acabó entrar y salir de un editor aparte. */
+.runlist{display:flex; flex-direction:column; gap:10px}
+.rsess{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  box-shadow:var(--shadow); overflow:hidden}
+.rsess.open{border-color:var(--accent)}
+.rhead{display:flex; align-items:center; gap:10px; padding:13px 14px; width:100%;
+  border:0; background:transparent; text-align:left; color:inherit}
+.rhead .rh-t{flex:1; min-width:0}
+.rhead h3{font-size:16px; overflow-wrap:anywhere}
+.rhead .rh-m{font-family:var(--f-mono); font-size:11.5px; color:var(--zinc); margin-top:3px}
+.rhead .rh-c{flex:none; color:var(--zinc); transition:transform .18s ease}
+.rsess.open .rhead .rh-c{transform:rotate(90deg)}
+
+.profile{display:flex; align-items:flex-end; gap:2px; height:52px; padding:0 14px 12px}
+.profile i{flex:1; min-width:2px; background:var(--accent); border-radius:2px 2px 0 0; opacity:.8}
+.profile i.hot{background:var(--red); opacity:1}
+.profile i.cool{background:var(--teal); opacity:1}
+
+.rbody{border-top:1px solid var(--line2); padding:12px 14px 14px}
+.unitrow{display:flex; align-items:center; gap:6px; margin-bottom:10px}
+.unitrow .ul{font-size:11px; color:var(--zinc); font-weight:600; text-transform:uppercase;
+  letter-spacing:.05em; margin-right:auto}
+
+/* Un tramo: número, franja de minutos acumulados, y sus dos casillas. */
+.tramos{display:flex; flex-direction:column; gap:6px}
+.tramo{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--line2);
+  border:1px solid var(--line); border-left:3px solid var(--line); border-radius:10px;
+  padding:8px 8px 8px 10px; touch-action:pan-y}
+.tramo.hot{border-left-color:var(--red)}
+.tramo.cool{border-left-color:var(--teal)}
+.tramo.ghost{opacity:.28}
+.tramo.flying{position:fixed; z-index:80; box-shadow:var(--lift); border-color:var(--accent);
+  pointer-events:none; background:var(--card)}
+.tramo .thandle{flex:none; width:26px; height:34px; display:grid; place-items:center;
+  color:var(--zinc); touch-action:none; cursor:grab; margin-left:-6px}
+.tramo .tn{flex:none; width:18px; font-family:var(--f-mono); font-size:12px; font-weight:600; color:var(--zinc)}
+/* El dato que evita necesitar cronómetro: entre qué minuto y qué minuto va. */
+.tramo .trange{flex:1; min-width:96px; font-family:var(--f-mono); font-size:13px; font-weight:600}
+.tramo .trange em{font-style:normal; color:var(--zinc); font-weight:400}
+.tramo .num{background:var(--card)}
+.tramo .num.spd input{width:58px; font-size:17px; font-weight:700}
+.tramo .tkm{flex:none; font-family:var(--f-mono); font-size:11px; color:var(--zinc); min-width:52px; text-align:right}
+.tramo .trm{flex:none; width:34px; height:34px; border:0; background:transparent; color:var(--zinc);
+  font-size:19px; border-radius:9px; display:grid; place-items:center}
+.addtramo{width:100%; margin-top:8px; border:1px dashed var(--line); background:transparent;
+  color:var(--accent); border-radius:10px; min-height:44px; font-weight:700; font-size:14px}
+.addtramo:hover{border-color:var(--accent); background:var(--accent-soft)}
+.rtot{display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0}
+.racts{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
+.racts .btn{flex:1 1 auto; min-width:84px}
+.rnote{display:block; margin-top:12px}
+.rnote span{display:block; font-size:11.5px; color:var(--zinc); font-weight:600;
+  text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px}
+.rnote textarea{width:100%; background:var(--line2); border:1px solid var(--line); border-radius:10px;
+  padding:10px 12px; font-size:14px; outline:0; resize:vertical}
+
+/* ---------- barra de seguimiento ----------
+   No ocupa la pantalla: los datos ya están en la cinta y en la tabla de arriba.
+   Esto solo avisa de cuándo toca cambiar de velocidad. */
+.runbar{position:fixed; left:0; right:0; bottom:calc(var(--nav) + var(--sab)); z-index:70;
+  background:var(--ink); color:var(--paper); display:flex; align-items:center; gap:8px;
+  padding:10px 12px; box-shadow:var(--lift)}
+.runbar .prog{position:absolute; left:0; top:0; height:3px; background:var(--accent); transition:width .25s linear}
+.runbar.hot{background:var(--red)}
+.runbar.cool{background:var(--teal)}
+.rb-l{flex:1; min-width:0}
+.rb-name{font-size:12px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rb-next{font-size:10.5px; opacity:.7; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rb-v{flex:none; display:flex; align-items:baseline; gap:3px}
+.rb-v b{font-family:var(--f-display); font-size:26px; font-weight:800; line-height:1; letter-spacing:-.02em}
+.rb-v span{font-size:9.5px; opacity:.7}
+.rb-c{flex:none; font-family:var(--f-mono); font-size:20px; font-weight:600;
+  font-variant-numeric:tabular-nums; line-height:1}
+.runbar button{flex:none; border:1px solid rgba(255,255,255,.28); background:transparent; color:inherit;
+  border-radius:9px; min-width:34px; min-height:34px; font-size:13px; font-weight:700}
+@media (pointer:coarse){ .runbar button{min-width:42px; min-height:42px} }
+@media (min-width:761px){ .runbar{bottom:0; left:auto; right:16px; bottom:16px;
+  width:min(520px,92vw); border-radius:14px} }
+
 /* ---------- toast ---------- */
 .toast{position:fixed; left:50%; bottom:calc(var(--nav) + var(--sab) + 76px); transform:translate(-50%,14px);
   background:var(--ink); color:var(--paper); padding:11px 16px; border-radius:11px; font-size:13.5px; font-weight:500;
   z-index:90; opacity:0; pointer-events:none; transition:.22s; box-shadow:var(--lift); max-width:92vw; text-align:center}
 .toast.on{opacity:1; transform:translate(-50%,0)}
 @media (min-width:761px){ .toast{bottom:22px} }
+.toast{display:flex; align-items:center; gap:12px}
+.toast .tmsg{min-width:0}
+.tundo{flex:none; border:1px solid rgba(255,255,255,.34); background:transparent; color:inherit;
+  border-radius:8px; padding:5px 11px; font-size:12px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.05em; min-height:32px}
+@media (pointer:coarse){ .tundo{min-height:40px; padding:8px 14px} }
 </style>
 </head>
 <body>
@@ -391,6 +553,7 @@ footer p{margin:0 0 6px}
     <div class="tabs" role="tablist">
       <button role="tab" data-view="explore" aria-selected="true">Explorar</button>
       <button role="tab" data-view="routines" aria-selected="false">Rutinas</button>
+      <button role="tab" data-view="run" aria-selected="false">Correr</button>
       <button role="tab" data-view="setup" aria-selected="false">Setup</button>
     </div>
   </div>
@@ -521,6 +684,20 @@ footer p{margin:0 0 6px}
   </div>
 </section>
 
+<!-- ============ CORRER ============ -->
+<section id="viewRun" hidden>
+  <div class="wrap">
+    <div class="source" style="border:0;padding-top:14px">
+      <button class="btn sm" id="btnNewRun">+ <span>Nueva sesión</span></button>
+      <button class="btn ghost sm" id="btnRunImport">Importar</button>
+      <button class="btn ghost sm" id="btnRunExport">Exportar</button>
+      <input type="file" id="runIn" accept=".json,application/json" hidden>
+    </div>
+    <div class="runlist" id="runList"></div>
+    <div class="empty" id="runEmpty" hidden></div>
+  </div>
+</section>
+
 <!-- ============ SETUP ============ -->
 <section id="viewSetup" hidden>
   <div class="wrap">
@@ -555,6 +732,19 @@ footer p{margin:0 0 6px}
       <div class="opts"><label>Framework</label><div class="pills" id="pFw"></div></div>
       <div class="codebox"><button class="copy" data-copy="#prompt">Copiar prompt</button><pre id="prompt" style="white-space:pre-wrap"></pre></div>
     </div>
+    <div class="step">
+      <span class="num2">04</span><h3>Ejercicios ocultos</h3>
+      <p class="lead">Patrones que no quieres ver en el explorador. Se comparan con el
+      buscador, así que <code class="mono">peso muerto</code> tapa todas sus variantes de
+      una vez. El dataset no se toca: quita el patrón y vuelven.</p>
+      <div class="pills" id="hideList"></div>
+      <div class="field">
+        <input id="hideIn" placeholder="Añadir un patrón, p. ej. burpee" spellcheck="false" aria-label="Patrón a ocultar">
+        <button class="btn" id="btnHideAdd">Ocultar</button>
+      </div>
+      <p class="note" id="hideNote"></p>
+    </div>
+
     <footer>
       <p>Datos y traducciones: <a href="https://github.com/hasaneyldrm/exercises-dataset" target="_blank" rel="noopener">hasaneyldrm/exercises-dataset</a> — MIT.</p>
       <p>Multimedia © Gym visual — gymvisual.com. La app usa <code class="mono">media_id</code> y rutas; no incrusta archivos.</p>
@@ -569,6 +759,8 @@ footer p{margin:0 0 6px}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span data-nav="explore"></span></button>
   <button data-view="routines" aria-selected="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span data-nav="routines"></span></button>
+  <button data-view="run" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="15.5" cy="4.2" r="1.8"/><path d="M13 21l1.5-5.5L11 13l1-5 4 2 2.5 1M12 8L8.5 9 7 12M11 13l-3 3-2 5"/></svg><span data-nav="run"></span></button>
   <button data-view="setup" aria-selected="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg><span data-nav="setup"></span></button>
 </nav>
@@ -584,7 +776,7 @@ footer p{margin:0 0 6px}
     <button class="close" id="dClose" aria-label="Cerrar la ficha">×</button>
   </div>
   <div class="sbody" id="dBody"></div>
-  <div class="sfoot"><button class="btn" id="dAdd"></button></div>
+  <div class="sfoot"><button class="btn ghost" id="dHide"></button><button class="btn" id="dAdd"></button></div>
 </aside>
 <div class="timer" id="timerBar" role="timer" aria-live="polite" hidden>
   <span class="prog" id="tProg"></span>
@@ -597,6 +789,19 @@ footer p{margin:0 0 6px}
   <button id="tPause" aria-label="Pausar o reanudar el descanso">II</button>
   <button id="tStop" aria-label="Parar el descanso">×</button>
 </div>
+<div class="runbar" id="runBar" role="timer" aria-live="polite" hidden>
+  <span class="prog" id="rbProg"></span>
+  <div class="rb-l">
+    <div class="rb-name" id="rbName"></div>
+    <div class="rb-next" id="rbNext"></div>
+  </div>
+  <div class="rb-v"><b id="rbSpeed">0</b><span id="rbUnit">km/h</span></div>
+  <div class="rb-c" id="rbClock">00:00</div>
+  <button id="rbSkip" aria-label="Saltar al siguiente tramo">»</button>
+  <button id="rbPause" aria-label="Pausar o reanudar">II</button>
+  <button id="rbStop" aria-label="Terminar la sesión">×</button>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -937,7 +1142,7 @@ function strip(arr){
 }
 
 /* Búsquedas rápidas para arrancar sin escribir. */
-const QUICK = ["press de banca","sentadilla","peso muerto","dominadas","jalón al pecho",
+const QUICK = ["press de banca","sentadilla","dominadas","jalón al pecho",
   "elevaciones laterales","curl de bíceps","fondos","remo","prensa","press militar",
   "abdominales","gemelos","aperturas","zancadas"];
 
@@ -946,7 +1151,7 @@ const T = {
  es:{dayrest:"Descanso del día",restset:"Descanso:",backtor:"← Volver a la rutina",setfmt:"Serie {n} de {m}",serie:"Serie",done_all:"Completo",progress:"Progreso",resetday:"Reiniciar",exdone:"Ejercicio completo",zeroed:"Series a cero",go:"Ir",ready:"¡Listo!",restlbl:"Descanso",muscle:"Músculo",cached:"Dataset guardado en el móvil",uncache:"Vaciar",uncached:"Caché vaciada", search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
   sort_id:"Orden: ID",sort_az:"Orden: A–Z",clear:"Limpiar",of:"de",results:"resultados",more:"Cargar más",
   none:"Sin resultados",none_h:"Prueba con otro nombre (press banca, jalón al pecho, sentadilla) o quita algún filtro.",
-  explore:"Explorar",routines:"Rutinas",setup:"Setup",steps:"Instrucciones paso a paso",
+  explore:"Explorar",routines:"Rutinas",run:"Correr",setup:"Setup",steps:"Instrucciones paso a paso",
   nosteps:"Sin instrucciones en este idioma.",data:"Ficha",media:"Multimedia (solo metadata)",
   bp:"Parte",eq:"Equipo",tg:"Objetivo",mg:"Grupo muscular",sm:"Secundarios",cat:"Categoría",created:"Alta",
   copy:"Copiar",copied:"Copiado",json:"Registro JSON",demo:"Modo demo · 12 ejercicios",full:"Dataset completo",
@@ -963,6 +1168,9 @@ const T = {
   copyof:"copia",addedall:"Añadido a los",noresolve:"sin encontrar",
   imported:"Rutina importada",resolved:"ejercicios reconocidos",
   findit:"Búscalo y añádelo con +",
+  undo:"Deshacer",undone:"Recuperado",
+  rm_item:"Ejercicio eliminado",rm_day:"Día eliminado",
+  rm_rout:"Rutina eliminada",rm_hist:"Historial vaciado",rm_sess:"Sesión eliminada",
   loading:"Cargando…",err:"No se pudo leer el archivo.",open:"Abrir exercises.json",gh:"Descargar de GitHub",
   sub:"ejercicios",addto:"Añadir a",newr:"Nueva rutina",routine:"Rutina",day:"Día",
   addex:"+ Añadir ejercicios",addday:"+ Día",delday:"Borrar día",rename:"Renombrar",export:"Exportar",
@@ -985,7 +1193,8 @@ const uid = () => Math.random().toString(36).slice(2,9);
 const state = { data:[], byId:new Map(), full:false, media:"off",
   q:"", bp:[], eq:[], tgs:[], fav:false, sort:"id", shown:60,
   routines:[], favs:[], curR:null, curD:0, view:"explore",
-  hist:[], histView:false, allDays:false, pace:"kmh" };
+  hist:[], histView:false, allDays:false, pace:"kmh",
+  runs:[], curRun:null, runOpen:null, hide:["peso muerto"] };
 
 /* ---------- almacenamiento: window.storage → localStorage → memoria ---------- */
 const Store = (() => {
@@ -1004,7 +1213,8 @@ const Store = (() => {
     return { kind:"memory", async get(k){ return mem[k] ?? null; }, async set(k,v){ mem[k] = v; } };
   }
 })();
-const K = { routines:"idx:routines", favs:"idx:favs", prefs:"idx:prefs", log:"idx:log" };
+const K = { routines:"idx:routines", favs:"idx:favs", prefs:"idx:prefs", log:"idx:log",
+  runs:"idx:runs" };
 
 /* IndexedDB para el dataset completo (17 MB: no cabe en localStorage) */
 const IDB = (() => {
@@ -1049,24 +1259,73 @@ function persist(){
     Store.set(K.routines, state.routines);
     Store.set(K.favs, state.favs);
     Store.set(K.log, state.hist);
-    Store.set(K.prefs, { media:state.media, curR:state.curR, curD:state.curD });
+    Store.set(K.runs, state.runs);
+    Store.set(K.prefs, { media:state.media, curR:state.curR, curD:state.curD,
+      pace:state.pace, hide:state.hide });
   }, 200);
 }
 
+/* Un pulso de 8 ms al confirmar una acción. Es lo que hace que un toque se
+   sienta firme en vez de resbaladizo. Android lo hace; Safari no expone la
+   vibración a las webs, así que allí simplemente no pasa nada. */
+function tap(){ try{ if (navigator.vibrate) navigator.vibrate(8); }catch(_){} }
+
 function toast(msg){
-  const el = $("#toast"); el.textContent = msg; el.classList.add("on");
+  const el = $("#toast");
+  el.innerHTML = '<span class="tmsg"></span>';
+  el.querySelector(".tmsg").textContent = msg;
+  el.classList.add("on");
   clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 1900);
+}
+
+/* ---------- deshacer ----------
+   Borrar es de un solo toque, sin diálogo, porque preguntar «¿seguro?» cada vez
+   cansa más de lo que protege. A cambio, todo lo destructivo deja un aviso con
+   Deshacer durante seis segundos: si te llevaste algo por delante sin querer,
+   está a un toque de volver. */
+function undoable(msg, deshacer){
+  const el = $("#toast");
+  el.innerHTML = '<span class="tmsg"></span><button class="tundo"></button>';
+  el.querySelector(".tmsg").textContent = msg;
+  const b = el.querySelector(".tundo");
+  b.textContent = t("undo");
+  b.onclick = () => {
+    clearTimeout(el._t);
+    el.classList.remove("on");
+    try{ deshacer(); }catch(_){}
+    setTimeout(() => toast(t("undone")), 120);
+  };
+  el.classList.add("on");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("on"), 6000);
 }
 
 /* ==========================  DATOS  ========================== */
 async function boot(){
-  const [r, f, p, h] = await Promise.all([Store.get(K.routines), Store.get(K.favs),
-    Store.get(K.prefs), Store.get(K.log)]);
+  const [r, f, p, h, rn] = await Promise.all([Store.get(K.routines), Store.get(K.favs),
+    Store.get(K.prefs), Store.get(K.log), Store.get(K.runs)]);
   if (Array.isArray(r)) state.routines = r;
   if (Array.isArray(f)) state.favs = f;
   if (Array.isArray(h)) state.hist = h;
+  /* null = nunca se guardó nada, o sea primera vez. Un array vacío significa
+     que las borraste a propósito, y entonces no se reponen. */
+  if (Array.isArray(rn)) state.runs = rn;
+  else { state.runs = seedRuns(); persist(); }
   if (p){ if (p.media) state.media = p.media;
-    if (p.curR) state.curR = p.curR; if (typeof p.curD === "number") state.curD = p.curD; }
+    if (p.curR) state.curR = p.curR; if (typeof p.curD === "number") state.curD = p.curD;
+    if (p.pace) state.pace = p.pace;
+    if (Array.isArray(p.hide)) state.hide = p.hide; }
+  /* Sesión de carrera a medias: si la app se recargó hace menos de tres horas,
+     se retoma donde estaba. El fin es un instante absoluto, así que el tiempo
+     transcurrido cuenta igual que si nunca se hubiera cerrado. */
+  const rsaved = await Store.get("idx:run");
+  if (rsaved && rsaved.id && state.runs.some(x => x.id === rsaved.id) &&
+      Date.now() - (rsaved.started || 0) < 3 * 3600 * 1000){
+    state.curRun = rsaved.id; run = rsaved;
+    $("#runBar").hidden = false;
+    clearInterval(rtick); rtick = setInterval(paintRun, 250); paintRun();
+  } else Store.set("idx:run", null);
+
   const tsaved = await Store.get("idx:timer");
   if (tsaved && (tsaved.left !== null || tsaved.end > Date.now())){ timer = tsaved; runTimer(); }
   else Store.set("idx:timer", null);
@@ -1190,11 +1449,24 @@ function probeMedia(){
 }
 
 /* ==========================  FILTROS  ========================== */
-function uniq(key){ return [...new Set(state.data.map(x => x[key]).filter(Boolean))].sort(); }
+function uniq(key){ return [...new Set(visibles().map(x => x[key]).filter(Boolean))].sort(); }
+/* ---------- ejercicios ocultos ----------
+   No por ID sino por patrón de búsqueda: «peso muerto» tapa de una vez las
+   treinta y pico variantes sin tener que enumerarlas, y sigue funcionando si
+   el dataset cambia. El dataset no se toca; esto solo filtra lo que se ve. */
+function isHidden(x){
+  if (!state.hide.length) return false;
+  return state.hide.some(p => {
+    const toks = stemAll(p).split(" ").filter(Boolean);
+    return toks.length && toks.every(w => x._s.indexOf(" " + w) > -1);
+  });
+}
+const visibles = () => state.hide.length ? state.data.filter(x => !isHidden(x)) : state.data;
+
 function activeFilters(){ return state.bp.length + state.eq.length + state.tgs.length + (state.fav?1:0); }
 function buildFilters(){
   const counts = {};
-  state.data.forEach(x => { const k = x.body_part || x.category; counts[k] = (counts[k]||0)+1; });
+  visibles().forEach(x => { const k = x.body_part || x.category; counts[k] = (counts[k]||0)+1; });
   const max = Math.max(1, ...Object.values(counts));
   $("#idx").innerHTML = Object.entries(counts).sort((a,b) => b[1]-a[1]).map(([k,v]) =>
     '<button class="chip" aria-pressed="'+state.bp.includes(k)+'" data-bp="'+esc(k)+'">'+
@@ -1219,8 +1491,8 @@ function buildFilters(){
      elegidas. Se oculta cuando la selección tiene un solo músculo, porque
      entonces filtrar por él no cambiaría nada. */
   const scope = state.bp.length
-    ? state.data.filter(x => state.bp.includes(x.body_part || x.category))
-    : state.data;
+    ? visibles().filter(x => state.bp.includes(x.body_part || x.category))
+    : visibles();
   const mc = {};
   scope.forEach(x => { if (x.target) mc[x.target] = (mc[x.target]||0) + 1; });
   state.tgs = state.tgs.filter(m => mc[m]);          // suelta los que ya no aplican
@@ -1269,7 +1541,7 @@ function match(){
   const q = state.q;
   const toks = q ? stemAll(q).split(" ").filter(Boolean) : [];
   const idq = /^\d{1,4}$/.test(q) ? q.padStart(4, "0") : null;
-  const out = state.data.filter(x =>
+  const out = visibles().filter(x =>
     (!state.bp.length || state.bp.includes(x.body_part || x.category)) &&
     (!state.eq.length || state.eq.includes(x.equipment)) &&
     (!state.tgs.length || state.tgs.includes(x.target)) &&
@@ -1350,6 +1622,7 @@ function addToRoutine(exId){
   /* Con «Todos los días» seleccionado, un toque en + lo mete en los seis. Es
      lo que se necesita para la elíptica de calentamiento o la carrera final:
      repetirlo día por día era el trabajo tonto que había que quitar. */
+  tap();
   if (state.allDays){
     r.days.forEach(d => d.items.push(newItem(exId, d)));
     touch(); syncTargetBar();
@@ -1511,8 +1784,14 @@ function renderHist(){
       '</div>';
   }).join("");
   $$("#histList [data-hdel]").forEach(b => b.onclick = () => {
-    if (!confirm(t("confirm"))) return;
-    state.hist = state.hist.filter(x => x.id !== b.dataset.hdel); persist(); renderHist();
+    const pos = state.hist.findIndex(x => x.id === b.dataset.hdel);
+    if (pos < 0) return;
+    const [quitada] = state.hist.splice(pos, 1);
+    persist(); renderHist();
+    undoable(t("rm_sess"), () => {
+      state.hist.splice(Math.min(pos, state.hist.length), 0, quitada);
+      persist(); renderHist();
+    });
   });
 }
 $("#btnHist").onclick = () => { state.histView = true; renderRoutines(); scrollTo({top:0}); };
@@ -1524,7 +1803,11 @@ $("#btnHistExport").onclick = () => {
 };
 $("#btnHistClear").onclick = () => {
   if (!state.hist.length || !confirm(t("confirm"))) return;
-  state.hist = []; persist(); renderHist(); toast(t("zeroed"));
+  const copia = state.hist;
+  state.hist = []; persist(); renderHist();
+  undoable(t("rm_hist") + " · " + copia.length + " " + t("sessions"), () => {
+    state.hist = copia; persist(); renderHist();
+  });
 };
 function renderHome(){
   const list = state.routines;
@@ -1540,6 +1823,7 @@ function renderHome(){
       esc(t("lastup"))+' '+new Date(r.updated).toLocaleDateString("es")+'</p>'+
       '<div class="row">'+
         '<button class="btn sm" data-open="'+r.id+'">'+esc(t("open_r"))+'</button>'+
+        '<button class="btn ghost sm" data-ren="'+r.id+'">'+esc(t("rename"))+'</button>'+
         '<button class="btn ghost sm" data-dup="'+r.id+'">'+esc(t("dup"))+'</button>'+
         '<button class="btn ghost sm" data-exp="'+r.id+'">'+esc(t("export"))+'</button>'+
         '<button class="btn danger sm" data-del="'+r.id+'">'+esc(t("del"))+'</button>'+
@@ -1547,6 +1831,14 @@ function renderHome(){
   }).join("");
   $$("#rlist [data-open]").forEach(b => b.onclick = () => { state.curR = b.dataset.open; state.curD = 0;
     state.editing = true; persist(); renderRoutines(); });
+  /* Renombrar sin tener que entrar en la rutina: desde la lista, que es donde
+     te das cuenta de que dos se llaman igual. */
+  $$("#rlist [data-ren]").forEach(b => b.onclick = () => {
+    const r = state.routines.find(x => x.id === b.dataset.ren); if (!r) return;
+    const n = prompt(t("rename"), r.name); if (n === null) return;
+    r.name = n.trim() || r.name; r.updated = Date.now();
+    persist(); renderHome(); syncTargetBar();
+  });
   $$("#rlist [data-dup]").forEach(b => b.onclick = () => {
     const src = state.routines.find(r => r.id === b.dataset.dup);
     const copy = JSON.parse(JSON.stringify(src));
@@ -1556,10 +1848,17 @@ function renderHome(){
   });
   $$("#rlist [data-exp]").forEach(b => b.onclick = () => exportRoutine(state.routines.find(r => r.id === b.dataset.exp)));
   $$("#rlist [data-del]").forEach(b => b.onclick = () => {
-    if (!confirm(t("confirm"))) return;
-    state.routines = state.routines.filter(r => r.id !== b.dataset.del);
-    if (state.curR === b.dataset.del) state.curR = state.routines[0] ? state.routines[0].id : null;
+    const pos = state.routines.findIndex(r => r.id === b.dataset.del);
+    if (pos < 0) return;
+    const [quitada] = state.routines.splice(pos, 1);
+    const eraActiva = state.curR === quitada.id;
+    if (eraActiva) state.curR = state.routines[0] ? state.routines[0].id : null;
     persist(); renderRoutines();
+    undoable(t("rm_rout") + " · " + quitada.name, () => {
+      state.routines.splice(Math.min(pos, state.routines.length), 0, quitada);
+      if (eraActiva) state.curR = quitada.id;
+      persist(); renderRoutines();
+    });
   });
 }
 function renderEditor(){
@@ -1603,7 +1902,7 @@ function renderEditor(){
         (i.kind === "car" ? '<div class="derived">'+esc(paceTxt(i))+'</div>' : "") +
         setButton(i) + '</div>'+
       (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" data-open="'+esc(ex ? ex.id : "")+'" onerror="this.remove()">' : "")+
-      '<button class="irm" data-rm="'+i.uid+'" aria-label="Quitar de la rutina">×</button></div>';
+      '<span class="irmwrap"><button class="irm" data-rm="'+i.uid+'" aria-label="Quitar de la rutina">×</button></span></div>';
   }).join("");
   $$("#items [data-set]").forEach(b => b.onclick = () => tapSet(b.dataset.set));
   $$("#items [data-open]").forEach(b => b.onclick = () => { if (b.dataset.open) openDetail(b.dataset.open, true); });
@@ -1614,7 +1913,15 @@ function renderEditor(){
     switchView("explore"); toast(t("findit"));
   });
   $$("#items [data-rm]").forEach(b => b.onclick = () => {
-    d.items = d.items.filter(x => x.uid !== b.dataset.rm); touch(); renderEditor(); toast(t("removed"));
+    const pos = d.items.findIndex(x => x.uid === b.dataset.rm);
+    if (pos < 0) return;
+    const [quitado] = d.items.splice(pos, 1);
+    const dia = d;                       // capturado: puedes cambiar de día antes de deshacer
+    touch(); renderEditor();
+    undoable(t("rm_item"), () => {
+      dia.items.splice(Math.min(pos, dia.items.length), 0, quitado);
+      touch(); renderRoutines();
+    });
   });
   const FLOAT = new Set(["kg", "km", "pace"]);
   $$("#items input[data-f]").forEach(inp => inp.onchange = () => {
@@ -1775,6 +2082,7 @@ function tapSet(uidv){
   const d = getD(); if (!d) return;
   const it = d.items.find(x => x.uid === uidv); if (!it) return;
   const ex = exOf(it), nom = ex ? cap(ex._es) : (it.q ? cap(it.q) : "");
+  tap();
 
   if (it.kind === "car"){
     if ((+it.done || 0) > 0){
@@ -1856,10 +2164,15 @@ $("#btnRename").onclick = () => {
   r.name = n.trim() || r.name; touch(); renderEditor(); syncTargetBar();
 };
 $("#btnDelRoutine").onclick = () => {
-  if (!confirm(t("confirm"))) return;
-  state.routines = state.routines.filter(r => r.id !== state.curR);
+  const pos = state.routines.findIndex(r => r.id === state.curR);
+  if (pos < 0) return;
+  const [quitada] = state.routines.splice(pos, 1);
   state.curR = state.routines[0] ? state.routines[0].id : null;
   state.editing = false; persist(); renderRoutines();
+  undoable(t("rm_rout") + " · " + quitada.name, () => {
+    state.routines.splice(Math.min(pos, state.routines.length), 0, quitada);
+    state.curR = quitada.id; state.editing = true; persist(); renderRoutines();
+  });
 };
 /* ---------- nombres de día ----------
    Al añadir o duplicar, el día nuevo hereda el patrón del anterior en vez de
@@ -1938,8 +2251,14 @@ $("#btnAddDay").onclick = () => {
 };
 $("#btnDelDay").onclick = () => {
   const r = getR(); if (!r || r.days.length <= 1) return;
-  if (!confirm(t("confirm"))) return;
-  r.days.splice(state.curD, 1); state.curD = Math.max(0, state.curD - 1); touch(); renderEditor(); syncTargetBar();
+  const pos = state.curD;
+  const [quitado] = r.days.splice(pos, 1);
+  state.curD = Math.max(0, pos - 1);
+  touch(); renderEditor(); syncTargetBar();
+  undoable(t("rm_day") + " · " + quitado.name, () => {
+    r.days.splice(Math.min(pos, r.days.length), 0, quitado);
+    state.curD = pos; touch(); renderRoutines();
+  });
 };
 $("#btnResetDay").onclick = () => {
   const r = getR(), d = getD(); if (!r || !d || !d.items.length) return;
@@ -2260,6 +2579,16 @@ function openDetail(id, desdeRutina){
       row("media_id", x.media_id, true) + row("image", x.image, true) +
       row("gif_url", x.gif_url, true) + row("attribution", x.attribution, true) + '</dl>';
   $("#dAdd").textContent = fromRoutine ? t("backtor") : t("addhere");
+  $("#dHide").textContent = "Ocultar";
+  $("#dHide").onclick = () => {
+    const nombre = x._es;
+    if (!state.hide.includes(nombre)) state.hide.push(nombre);
+    persist(); closeDetail(); buildFilters(); render();
+    undoable("Oculto · " + cap(nombre), () => {
+      state.hide = state.hide.filter(p => p !== nombre);
+      persist(); buildFilters(); render();
+    });
+  };
   bindCopy();
   $("#sheet").hidden = false;
   requestAnimationFrame(() => { $("#sheet").classList.add("on"); $("#scrim").classList.add("on"); });
@@ -2315,15 +2644,17 @@ function bindCopy(){
 /* ==========================  NAVEGACIÓN E IDIOMA  ========================== */
 /* Cada pestaña recuerda dónde estabas. Volver de Rutinas a Explorar y
    aparecer de nuevo arriba del todo obligaba a rebuscar el sitio cada vez. */
-const scrollMem = { explore:0, routines:0, setup:0 };
+const scrollMem = { explore:0, routines:0, run:0, setup:0 };
 function switchView(v){
   if (state.view !== v) scrollMem[state.view] = window.scrollY || window.pageYOffset || 0;
   state.view = v;
   $$("[data-view]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === v)));
   $("#viewExplore").hidden = v !== "explore";
   $("#viewRoutines").hidden = v !== "routines";
+  $("#viewRun").hidden = v !== "run";
   $("#viewSetup").hidden = v !== "setup";
   if (v === "routines") renderRoutines();
+  if (v === "run") renderRun();
   if (v === "explore") syncTargetBar();
   requestAnimationFrame(() => scrollTo({ top: scrollMem[v] || 0 }));
 }
@@ -2351,9 +2682,435 @@ function applyLang(){
     if (s) s.textContent = label; else if (!b.querySelector("svg")) b.textContent = label; });
   $("#storeInfo").textContent = Store.kind === "memory" ? t("nostore") : t("stored");
   setSource(state.full ? "full" : "demo");
-  buildFilters(); render(); renderRoutines(); renderSql();
+  buildFilters(); render(); renderRoutines(); renderRun(); renderHidden(); renderSql();
   if (!$("#sheet").hidden && detailId) openDetail(detailId, fromRoutine);
 }
+
+/* ==========================  CORRER  ==========================
+   Una sesión de carrera es una lista de tramos que se encadenan sin parar.
+   Lo que hace falta delante de una cinta no es un cronómetro más —la máquina ya
+   tiene el suyo— sino saber a qué velocidad toca ir en cada momento. De ahí que
+   cada tramo muestre su franja de minutos acumulados: miras el reloj de la
+   cinta, ves «voy por el 12» y la tabla te dice 8,2. Sin tocar nada.
+
+   Modelo:
+     { id, name, note, unit:"kmh"|"minkm", tramos:[{ id, min, v }], created, updated }
+   `v` siempre en km/h por dentro, pase lo que pase con `unit`: una sola fuente
+   de verdad evita que la velocidad y el ritmo se contradigan.  ========================== */
+
+/* Las cuatro sesiones del plan, tal cual vienen del documento. Se cargan una
+   sola vez, la primera que se abre la app; si las borras no vuelven. */
+function seedRuns(){
+  const T = ts => ts.map(([min, v]) => ({ id:uid(), min, v }));
+  const n = Date.now();
+  return [
+    { id:uid(), name:"D\u00eda A \u00b7 Potencia", note:"Lunes.", unit:"kmh",
+      tramos:T([[5,6.0],[5,7.0],[10,8.2],[7,10.0],[3,5.0],[2,4.5]]), created:n, updated:n },
+    { id:uid(), name:"D\u00eda B \u00b7 Suave", note:"Mi\u00e9rcoles. Objetivo 120 bpm.", unit:"kmh",
+      tramos:T([[5,5.0],[20,7.0],[3,6.5],[2,5.5],[2,4.5]]), created:n, updated:n },
+    { id:uid(), name:"D\u00eda C \u00b7 Progresivo", note:"Viernes.", unit:"kmh",
+      tramos:T([[5,4.5],[4,6.5],[4,7.0],[4,7.5],[1,8.5],[1,6.0],[1,9.0],[1,6.0],[1,10.5],[1,6.0]]),
+      created:n, updated:n },
+    { id:uid(), name:"C Long \u00b7 Resistencia", unit:"kmh",
+      note:"S\u00e1bado. No bajar de 8 km, no pasar de 10,5 km.\n" +
+           "El documento pide 60-70 min a 7,3-7,7 km/h, que dan 7,3-9,0 km: no llega a los " +
+           "8,5-10 km que tambi\u00e9n indica. Aqu\u00ed van 65 min a 7,5 km/h (8,1 km); sube la " +
+           "velocidad a 7,9 si quieres cumplir el m\u00ednimo de 8,5 km.",
+      tramos:T([[65,7.5]]), created:n, updated:n }
+  ];
+}
+
+const runTotalMin = r => (r.tramos || []).reduce((n,x) => n + (+x.min || 0), 0);
+const runTotalKm  = r => (r.tramos || []).reduce((n,x) => n + (+x.v || 0) * (+x.min || 0) / 60, 0);
+const runAvg      = r => { const m = runTotalMin(r); return m ? runTotalKm(r) / (m / 60) : 0; };
+const runUnit     = r => (r && r.unit === "minkm") ? "minkm" : "kmh";
+/* km/h ↔ min/km es la misma recta mirada del revés: 60/x en ambos sentidos. */
+const toUnit   = (v, u) => (u === "minkm") ? (v > 0 ? 60 / v : 0) : v;
+const fromUnit = (n, u) => (u === "minkm") ? (n > 0 ? 60 / n : 0) : n;
+const unitLbl  = u => u === "minkm" ? "min/km" : "km/h";
+const showVal  = (v, u) => { const n = toUnit(v, u); return n ? dec(n.toFixed(u === "minkm" ? 2 : 1)) : "0"; };
+
+function newRun(name){
+  const r = { id:uid(), name: name || ("Sesión " + (state.runs.length + 1)), note:"", unit:"kmh",
+    tramos:[{ id:uid(), min:5, v:6 }], created:Date.now(), updated:Date.now() };
+  state.runs.push(r); state.curRun = r.id; state.runOpen = r.id; persist(); return r;
+}
+const getRun = () => state.runs.find(r => r.id === state.curRun) || null;
+function touchRun(id){ const r = state.runs.find(x => x.id === id); if (r) r.updated = Date.now(); persist(); }
+
+function profileHtml(r){
+  const ts = r.tramos || []; if (!ts.length) return "";
+  const max = Math.max(...ts.map(x => +x.v || 0), 1);
+  const min = Math.min(...ts.map(x => +x.v || 0));
+  const tot = runTotalMin(r) || 1;
+  return ts.map(x => {
+    const v = +x.v || 0;
+    const cls = (max !== min && v >= max - 0.001) ? "hot" : ((max !== min && v <= min + 0.001) ? "cool" : "");
+    return '<i class="'+cls+'" style="height:'+Math.max(8, Math.round(v / max * 100))+'%;flex-grow:'+
+      Math.max(1, Math.round((+x.min || 0) / tot * 100))+'"></i>';
+  }).join("");
+}
+function fmtMin(m){
+  m = Math.round(m);
+  return m >= 60 ? Math.floor(m/60) + " h " + (m % 60 ? (m % 60) + " min" : "") : m + " min";
+}
+function runMeta(r){
+  const u = runUnit(r);
+  return fmtMin(runTotalMin(r)) + " · " + dec(runTotalKm(r).toFixed(2)) + " km · " +
+    showVal(runAvg(r), u) + " " + unitLbl(u);
+}
+
+/* ---------- lista: cabecera plegable + tabla de tramos ---------- */
+function renderRun(){ renderRunHome(); }
+function renderRunHome(){
+  const l = state.runs;
+  $("#runEmpty").hidden = l.length > 0;
+  $("#runEmpty").innerHTML = '<h3>Aún no hay sesiones</h3>'+
+    '<p>Crea una y ve añadiendo tramos: 5 min a 6,0 · 10 min a 8,2 · 3 min a 5,0.</p>';
+  $("#runList").innerHTML = l.map(r => {
+    const abierta = state.runOpen === r.id;
+    return '<div class="rsess'+(abierta ? " open" : "")+'" data-rs="'+r.id+'">'+
+      '<button class="rhead" data-rtog="'+r.id+'" aria-expanded="'+abierta+'">'+
+        '<span class="rh-t"><h3>'+esc(r.name)+'</h3>'+
+          '<span class="rh-m">'+esc(runMeta(r))+' · '+(r.tramos||[]).length+' tramos</span></span>'+
+        '<svg class="rh-c" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>'+
+      '</button>'+
+      '<div class="profile">'+profileHtml(r)+'</div>'+
+      (abierta ? bodyHtml(r) : "")+
+    '</div>';
+  }).join("");
+
+  $$("#runList [data-rtog]").forEach(b => b.onclick = () => {
+    state.runOpen = state.runOpen === b.dataset.rtog ? null : b.dataset.rtog;
+    state.curRun = b.dataset.rtog; persist(); renderRunHome();
+  });
+  if (state.runOpen) bindBody(state.runs.find(r => r.id === state.runOpen));
+}
+
+/* La tabla de tramos. Cada fila dice entre qué minutos va, cuánto dura y a qué
+   velocidad: los tres datos que hacen falta para seguir la sesión de un vistazo. */
+function bodyHtml(r){
+  const u = runUnit(r);
+  const ts = r.tramos || [];
+  const max = Math.max(...ts.map(x => +x.v || 0), 0);
+  const min = Math.min(...ts.map(x => +x.v || 0));
+  let acc = 0;
+  const filas = ts.map((x, idx) => {
+    const desde = acc, hasta = acc + (+x.min || 0); acc = hasta;
+    const v = +x.v || 0;
+    const cls = (max !== min && v >= max - 0.001) ? " hot" : ((max !== min && v <= min + 0.001) ? " cool" : "");
+    return '<div class="tramo'+cls+'" data-tid="'+x.id+'">'+
+      '<span class="thandle" data-tdrag="'+x.id+'" aria-label="Arrastrar para reordenar">'+
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></span>'+
+      '<span class="tn">'+(idx+1)+'</span>'+
+      '<span class="trange"><em>min</em> '+desde+'–'+hasta+'</span>'+
+      '<span class="num"><label>Min</label><input type="number" inputmode="numeric" min="0" step="1" '+
+        'value="'+(+x.min||0)+'" data-t="'+x.id+'" data-tf="min" aria-label="Minutos del tramo '+(idx+1)+'"></span>'+
+      '<span class="num kg spd"><label>'+unitLbl(u)+'</label><input type="number" inputmode="decimal" min="0" step="'+
+        (u === "minkm" ? "0.05" : "0.1")+'" value="'+showVal(v, u).replace(",", ".")+
+        '" data-t="'+x.id+'" data-tf="v" aria-label="Velocidad del tramo '+(idx+1)+'"></span>'+
+      '<span class="tkm">'+esc(dec((v * (+x.min||0) / 60).toFixed(2)))+' km</span>'+
+      '<button class="trm" data-trm="'+x.id+'" aria-label="Quitar el tramo '+(idx+1)+'">×</button>'+
+    '</div>';
+  }).join("");
+
+  return '<div class="rbody">'+
+    '<div class="unitrow"><span class="ul">Unidad</span>'+
+      '<button class="pill" data-runit="kmh" aria-pressed="'+(u === "kmh")+'" style="text-transform:none">km/h</button>'+
+      '<button class="pill" data-runit="minkm" aria-pressed="'+(u === "minkm")+'" style="text-transform:none">min/km</button>'+
+    '</div>'+
+    '<div class="tramos">'+filas+'</div>'+
+    '<button class="addtramo" data-tadd="'+r.id+'">+ Añadir tramo</button>'+
+    '<div class="rtot">'+
+      '<div class="stat"><b>'+fmtMin(runTotalMin(r))+'</b><span>duración</span></div>'+
+      '<div class="stat"><b>'+esc(dec(runTotalKm(r).toFixed(2)))+' km</b><span>distancia</span></div>'+
+      '<div class="stat"><b>'+esc(showVal(runAvg(r), u))+'</b><span>'+esc(unitLbl(u))+' medio</span></div>'+
+      '<div class="stat"><b>'+(r.tramos||[]).length+'</b><span>tramos</span></div>'+
+    '</div>'+
+    '<label class="rnote"><span>Notas</span><textarea rows="2" data-rnote="'+r.id+'" '+
+      'placeholder="Reglas, sensaciones, lo que quieras recordar">'+esc(r.note || "")+'</textarea></label>'+
+    '<div class="racts">'+
+      '<button class="btn" data-rungo="'+r.id+'">▶ Seguir</button>'+
+      '<button class="btn ghost sm" data-runren="'+r.id+'">Renombrar</button>'+
+      '<button class="btn ghost sm" data-rundup="'+r.id+'">Duplicar</button>'+
+      '<button class="btn danger sm" data-rundel="'+r.id+'">Borrar</button>'+
+    '</div></div>';
+}
+
+function bindBody(r){
+  if (!r) return;
+  const u = runUnit(r);
+
+  $$("#runList input[data-tf]").forEach(inp => inp.onchange = () => {
+    const x = r.tramos.find(y => y.id === inp.dataset.t); if (!x) return;
+    if (inp.dataset.tf === "v"){
+      const n = Math.max(0, parseFloat(inp.value) || 0);
+      x.v = Math.round(fromUnit(n, u) * 100) / 100;      // por dentro siempre km/h
+    } else x.min = Math.max(0, parseInt(inp.value, 10) || 0);
+    touchRun(r.id); renderRunHome();
+  });
+  $$("#runList [data-runit]").forEach(b => b.onclick = () => {
+    r.unit = b.dataset.runit; touchRun(r.id); renderRunHome();
+  });
+  $$("#runList [data-trm]").forEach(b => b.onclick = () => {
+    const pos = r.tramos.findIndex(y => y.id === b.dataset.trm); if (pos < 0) return;
+    const [q] = r.tramos.splice(pos, 1);
+    touchRun(r.id); renderRunHome();
+    undoable("Tramo eliminado", () => {
+      r.tramos.splice(Math.min(pos, r.tramos.length), 0, q); touchRun(r.id); renderRunHome();
+    });
+  });
+  /* El + añade la fila heredando los valores de la anterior y deja el cursor en
+     los minutos con el teclado ya abierto: se teclea y se salta a la velocidad,
+     sin diálogos de por medio y viendo crecer la tabla y el gráfico. */
+  $("#runList [data-tadd]") && ($("#runList [data-tadd]").onclick = () => {
+    const ult = r.tramos[r.tramos.length - 1];
+    const nuevo = { id:uid(), min: ult ? ult.min : 5, v: ult ? ult.v : 6 };
+    r.tramos.push(nuevo);
+    touchRun(r.id); renderRunHome();
+    const inp = document.querySelector('#runList .tramo[data-tid="'+nuevo.id+'"] input[data-tf="min"]');
+    if (inp){
+      inp.focus();
+      try{ inp.select(); }catch(_){}
+      if (inp.scrollIntoView) inp.scrollIntoView({block:"center", behavior:"smooth"});
+    }
+  });
+  const nota = $("#runList [data-rnote]");
+  if (nota) nota.onchange = () => { r.note = nota.value; touchRun(r.id); };
+
+  $$("#runList [data-rungo]").forEach(b => b.onclick = () => {
+    state.curRun = b.dataset.rungo; persist(); startRun();
+  });
+  $$("#runList [data-runren]").forEach(b => b.onclick = () => {
+    const n = prompt("Renombrar", r.name); if (n === null) return;
+    r.name = n.trim() || r.name; touchRun(r.id); renderRunHome();
+  });
+  $$("#runList [data-rundup]").forEach(b => b.onclick = () => {
+    const c = JSON.parse(JSON.stringify(r));
+    c.id = uid(); c.name = nextDayName(r.name, state.runs.map(x => x.name));
+    c.tramos.forEach(x => x.id = uid()); c.created = c.updated = Date.now();
+    state.runs.push(c); state.runOpen = c.id; state.curRun = c.id; persist(); renderRunHome();
+  });
+  $$("#runList [data-rundel]").forEach(b => b.onclick = () => {
+    const pos = state.runs.findIndex(x => x.id === b.dataset.rundel); if (pos < 0) return;
+    const [q] = state.runs.splice(pos, 1);
+    if (state.runOpen === q.id) state.runOpen = null;
+    persist(); renderRunHome();
+    undoable("Sesión eliminada · " + q.name, () => {
+      state.runs.splice(Math.min(pos, state.runs.length), 0, q);
+      state.runOpen = q.id; persist(); renderRunHome();
+    });
+  });
+  attachTramoDrag();
+}
+
+$("#btnNewRun").onclick = () => {
+  const n = prompt("Nueva sesión", "Sesión " + (state.runs.length + 1));
+  if (n === null) return;
+  newRun(n.trim() || undefined); renderRunHome(); scrollTo({top:0});
+};
+$("#btnRunExport").onclick = () => {
+  if (!state.runs.length) return;
+  download("sesiones-correr.json", { format:"idx-run/1",
+    exported:new Date().toISOString(), runs:state.runs });
+};
+$("#btnRunImport").onclick = () => $("#runIn").click();
+$("#runIn").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const j = JSON.parse(rd.result);
+      const arr = Array.isArray(j.runs) ? j.runs : (Array.isArray(j) ? j : [j]);
+      let n = 0;
+      arr.forEach(r => {
+        if (!r || !Array.isArray(r.tramos)) return;
+        r.id = uid(); r.updated = Date.now(); r.created = r.created || Date.now();
+        r.unit = r.unit === "minkm" ? "minkm" : "kmh";
+        r.tramos.forEach(x => x.id = uid());
+        state.runs.push(r); n++;
+      });
+      if (!n) throw 0;
+      persist(); renderRunHome(); toast(n + " sesiones importadas");
+    }catch(_){ toast(t("err")); }
+  };
+  rd.readAsText(f, "utf-8");
+};
+
+/* Arrastre de tramos: mismo mecanismo de punteros que la lista de ejercicios. */
+let tdrag = null;
+function attachTramoDrag(){
+  $$("#runList [data-tdrag]").forEach(h => h.addEventListener("pointerdown", startTDrag));
+}
+function startTDrag(ev){
+  if (ev.button !== undefined && ev.button !== 0) return;
+  const row = ev.currentTarget.closest(".tramo"), list = row.parentNode;
+  const rect = row.getBoundingClientRect();
+  ev.preventDefault();
+  try{ ev.currentTarget.setPointerCapture(ev.pointerId); }catch(_){}
+  const fly = row.cloneNode(true);
+  fly.classList.add("flying");
+  fly.style.cssText += ";left:"+rect.left+"px;top:"+rect.top+"px;width:"+rect.width+"px;height:"+rect.height+"px";
+  document.body.appendChild(fly);
+  row.classList.add("ghost");
+  tdrag = { row, fly, list, dy: ev.clientY - rect.top, dx: ev.clientX - rect.left, moved:false };
+  window.addEventListener("pointermove", onTDrag, {passive:false});
+  window.addEventListener("pointerup", endTDrag);
+  window.addEventListener("pointercancel", endTDrag);
+}
+function onTDrag(ev){
+  if (!tdrag) return;
+  ev.preventDefault();
+  tdrag.moved = true;
+  tdrag.fly.style.left = (ev.clientX - tdrag.dx) + "px";
+  tdrag.fly.style.top  = (ev.clientY - tdrag.dy) + "px";
+  const rows = [...tdrag.list.querySelectorAll(".tramo:not(.flying)")];
+  for (const other of rows){
+    if (other === tdrag.row) continue;
+    const r = other.getBoundingClientRect(), mid = r.top + r.height / 2;
+    if (ev.clientY < mid && other.compareDocumentPosition(tdrag.row) & Node.DOCUMENT_POSITION_FOLLOWING){
+      tdrag.list.insertBefore(tdrag.row, other); break;
+    }
+    if (ev.clientY > mid && other.compareDocumentPosition(tdrag.row) & Node.DOCUMENT_POSITION_PRECEDING){
+      tdrag.list.insertBefore(tdrag.row, other.nextSibling); break;
+    }
+  }
+  const pad = 90;
+  if (ev.clientY < pad) scrollBy(0, -12);
+  else if (ev.clientY > innerHeight - pad) scrollBy(0, 12);
+}
+function endTDrag(){
+  if (!tdrag) return;
+  window.removeEventListener("pointermove", onTDrag);
+  window.removeEventListener("pointerup", endTDrag);
+  window.removeEventListener("pointercancel", endTDrag);
+  tdrag.fly.remove(); tdrag.row.classList.remove("ghost");
+  const r = state.runs.find(x => x.id === state.runOpen);
+  if (r && tdrag.moved){
+    const orden = [...tdrag.list.querySelectorAll(".tramo")].map(el => el.dataset.tid);
+    r.tramos.sort((a,b) => orden.indexOf(a.id) - orden.indexOf(b.id));
+    touchRun(r.id);
+  }
+  tdrag = null;
+  renderRunHome();
+}
+
+/* ---------- seguimiento ----------
+   Una barra abajo, no una pantalla completa: los datos ya están en la cinta y
+   en la tabla. Esto solo avisa de cuándo toca cambiar de velocidad. Cuenta
+   contra instantes absolutos, así que bloquear el móvil no la descuadra. */
+let run = null, rtick = null;
+
+function startRun(atIdx, elapsedMs){
+  const r = getRun(); if (!r || !(r.tramos || []).length) return;
+  stopRest();                       /* nunca dos barras a la vez */
+  try{ actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+       if (actx.state === "suspended") actx.resume(); }catch(_){}
+  const i = atIdx || 0;
+  run = { id:r.id, i, end: Date.now() + (+r.tramos[i].min || 0) * 60000 - (elapsedMs || 0),
+    left:null, started: Date.now() };
+  keepAwake(true);
+  $("#runBar").hidden = false;
+  persistRun(); paintRun();
+  clearInterval(rtick); rtick = setInterval(paintRun, 250);
+}
+function runOf(){ return state.runs.find(x => x.id === (run && run.id)) || null; }
+
+function paintRun(){
+  if (!run) return;
+  const r = runOf(); if (!r){ stopRun(); return; }
+  const ts = r.tramos, cur = ts[run.i];
+  if (!cur){ finishRun(); return; }
+  const resto = run.left !== null ? run.left : run.end - Date.now();
+
+  if (resto <= 0){
+    /* Tramo terminado: avisa y encadena. Si el móvil estuvo dormido y hay que
+       saltar varios de golpe, se avanza en silencio en vez de soltar una ráfaga. */
+    if (resto > -5000){
+      beep();
+      try{ if (navigator.vibrate) navigator.vibrate([150,80,150]); }catch(_){}
+    }
+    if (run.i + 1 >= ts.length){ finishRun(); return; }
+    run.i++;
+    run.end = Date.now() + (+ts[run.i].min || 0) * 60000;
+    run.left = null;
+    persistRun();
+    return paintRun();
+  }
+
+  const u = runUnit(r), sig = ts[run.i + 1];
+  const vmax = Math.max(...ts.map(x => +x.v || 0));
+  const vmin = Math.min(...ts.map(x => +x.v || 0));
+  const bar = $("#runBar");
+  bar.classList.toggle("hot", vmax !== vmin && (+cur.v || 0) >= vmax - 0.001);
+  bar.classList.toggle("cool", vmax !== vmin && (+cur.v || 0) <= vmin + 0.001);
+
+  $("#rbName").textContent = r.name + " · tramo " + (run.i + 1) + "/" + ts.length;
+  $("#rbNext").textContent = sig
+    ? "Luego " + showVal(+sig.v || 0, u) + " " + unitLbl(u) + " · " + (+sig.min || 0) + " min"
+    : "Último tramo";
+  $("#rbSpeed").textContent = showVal(+cur.v || 0, u);
+  $("#rbUnit").textContent = unitLbl(u);
+  $("#rbClock").textContent = fmt(resto);
+  $("#rbPause").textContent = run.left === null ? "II" : "▶";
+
+  const totMin = runTotalMin(r) || 1;
+  const hechos = ts.slice(0, run.i).reduce((n,x) => n + (+x.min||0), 0);
+  const dentro = ((+cur.min||0) * 60000 - resto) / 60000;
+  $("#rbProg").style.width = Math.min(100, (hechos + dentro) / totMin * 100) + "%";
+}
+function persistRun(){ Store.set("idx:run", run); }
+function stopRun(){
+  clearInterval(rtick); run = null;
+  $("#runBar").hidden = true;
+  $("#runBar").classList.remove("hot", "cool");
+  keepAwake(false); persistRun();
+}
+/* Al terminar se guarda lo hecho de verdad: los tramos completados más la parte
+   del que estaba en curso. Si sales en el tercero, cuenta hasta ahí. */
+function finishRun(parcial){
+  const r = runOf();
+  if (r && run){
+    const ts = r.tramos;
+    let min = ts.slice(0, run.i).reduce((n,x) => n + (+x.min||0), 0);
+    let km  = ts.slice(0, run.i).reduce((n,x) => n + (+x.v||0)*(+x.min||0)/60, 0);
+    if (parcial && ts[run.i]){
+      const resto = run.left !== null ? run.left : run.end - Date.now();
+      const dentro = Math.max(0, (+ts[run.i].min||0) - Math.max(0, resto) / 60000);
+      min += dentro; km += (+ts[run.i].v||0) * dentro / 60;
+    } else {
+      min = runTotalMin(r); km = runTotalKm(r);
+    }
+    if (min >= 0.5){
+      state.hist.unshift({ id:uid(), at:Date.now(), rn:"Correr", dn:r.name,
+        items:[{ ex:"run:"+r.id, n:r.name, kind:"car",
+                 min:Math.round(min*10)/10, km:Math.round(km*100)/100 }] });
+      if (state.hist.length > 400) state.hist.length = 400;
+      persist();
+      toast("Sesión guardada · " + fmtMin(min) + " · " + dec(km.toFixed(2)) + " km");
+    }
+  }
+  if (!parcial){
+    beep();
+    try{ if (navigator.vibrate) navigator.vibrate([200,100,200,100,350]); }catch(_){}
+  }
+  stopRun();
+}
+$("#rbPause").onclick = () => {
+  if (!run) return;
+  if (run.left === null){ run.left = run.end - Date.now(); keepAwake(false); }
+  else { run.end = Date.now() + run.left; run.left = null; keepAwake(true); }
+  persistRun(); paintRun();
+};
+$("#rbSkip").onclick = () => {
+  if (!run) return;
+  const r = runOf(); if (!r) return;
+  if (run.i + 1 >= r.tramos.length) return finishRun(true);
+  run.i++; run.end = Date.now() + (+r.tramos[run.i].min || 0) * 60000; run.left = null;
+  tap(); persistRun(); paintRun();
+};
+$("#rbStop").onclick = () => finishRun(true);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && run) paintRun(); });
 
 /* ==========================  SETUP  ========================== */
 const cfg = { dialect:"postgres", shape:"norm", langs:["es"], apiLang:"curl", fw:"express" };
@@ -2558,6 +3315,28 @@ function renderPrompt(){
 "Entrega el árbol de archivos y luego el contenido de cada archivo, listo para ejecutar."].join("\n");
   bindCopy();
 }
+
+/* Gestión de la lista de ocultos desde Setup. */
+function renderHidden(){
+  $("#hideList").innerHTML = state.hide.length
+    ? state.hide.map(p => '<button class="pill" data-unhide="'+esc(p)+'" '+
+        'style="text-transform:none">'+esc(p)+' ×</button>').join("")
+    : '<span class="note" style="margin:0">Ninguno.</span>';
+  $$("#hideList [data-unhide]").forEach(b => b.onclick = () => {
+    state.hide = state.hide.filter(p => p !== b.dataset.unhide);
+    persist(); renderHidden(); buildFilters(); render();
+  });
+  const n = state.data.length ? state.data.filter(isHidden).length : 0;
+  $("#hideNote").textContent = state.hide.length
+    ? n + " de " + nf(state.data.length) + " ejercicios ocultos ahora mismo." : "";
+}
+$("#btnHideAdd").onclick = () => {
+  const v = $("#hideIn").value.trim();
+  if (!v || state.hide.includes(v)) return;
+  state.hide.push(v); $("#hideIn").value = "";
+  persist(); renderHidden(); buildFilters(); render();
+};
+$("#hideIn").onkeydown = e => { if (e.key === "Enter") $("#btnHideAdd").onclick(); };
 
 /* ==========================  PWA  ========================== */
 (function pwa(){
