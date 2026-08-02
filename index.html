@@ -158,7 +158,9 @@ nav.bottom svg{width:21px; height:21px}
 .card .rail span{font-family:var(--f-mono); font-size:11.5px; font-weight:600; color:var(--ink2);
   writing-mode:vertical-rl; transform:rotate(180deg); letter-spacing:.06em}
 .card .open{flex:1; min-width:0; text-align:left; border:0; background:transparent; padding:11px 10px 11px 12px}
-.card h3{font-size:15px; line-height:1.28; text-transform:capitalize; overflow-wrap:anywhere}
+.card h3{font-size:15px; line-height:1.28; overflow-wrap:anywhere}
+.card .en{font-family:var(--f-mono); font-size:10.5px; color:var(--zinc); margin-top:3px;
+  overflow-wrap:anywhere; line-height:1.3}
 .tags{display:flex; flex-wrap:wrap; gap:5px; margin-top:8px}
 .tag{font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; text-transform:capitalize;
   background:var(--line2); color:var(--ink2)}
@@ -217,8 +219,9 @@ nav.bottom svg{width:21px; height:21px}
 .iopen .nm{display:flex; align-items:center; gap:6px}
 .iopen .see{flex:none; width:13px; height:13px; color:var(--zinc)}
 .item .ithumb{cursor:pointer}
-.item .ib .nm{font-weight:600; font-size:14.5px; text-transform:capitalize; line-height:1.3; overflow-wrap:anywhere}
-.item .ib .sub{font-size:11.5px; color:var(--zinc); margin-top:3px; text-transform:capitalize}
+.item .ib .nm{font-weight:600; font-size:14.5px; line-height:1.3; overflow-wrap:anywhere}
+.item .ib .sub{font-size:11.5px; color:var(--zinc); margin-top:3px}
+.item .ib .last{font-family:var(--f-mono); font-size:11px; color:var(--accent); margin-top:3px}
 .item .ithumb{flex:none; width:46px; height:46px; align-self:center; margin-right:8px; border-radius:8px;
   object-fit:contain; background:var(--line2); border:1px solid var(--line)}
 .item .irm{flex:none; border:0; background:transparent; color:var(--zinc); width:42px; font-size:18px}
@@ -226,8 +229,19 @@ nav.bottom svg{width:21px; height:21px}
 .num{display:flex; align-items:center; gap:5px; background:var(--line2); border:1px solid var(--line);
   border-radius:8px; padding:3px 7px}
 .num label{font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--zinc); font-weight:700}
-.num input{width:42px; border:0; background:transparent; text-align:center; font-family:var(--f-mono);
+.num input{width:40px; border:0; background:transparent; text-align:center; font-family:var(--f-mono);
   font-size:13px; font-weight:600; outline:0; padding:2px 0}
+.num.pace{border-style:dashed}
+.num.pace .pl{cursor:pointer; text-decoration:underline dotted; text-underline-offset:2px}
+.num.pace input{width:56px}
+.kbtn{align-self:center; border:1px solid var(--line); background:var(--line2); color:var(--zinc);
+  border-radius:8px; padding:5px 9px; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.05em; min-height:30px}
+.kbtn:hover{border-color:var(--accent); color:var(--accent)}
+.derived{font-family:var(--f-mono); font-size:11px; color:var(--zinc); padding:0 12px 8px; margin-top:-4px}
+.num.kg{border-color:var(--accent); background:var(--accent-soft)}
+.num.kg label{color:var(--accent)}
+.num.kg input{width:52px; color:var(--accent)}
 .summary{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
 .stat{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:7px 11px}
 .stat b{display:block; font-family:var(--f-mono); font-size:15px; font-weight:600; line-height:1.1}
@@ -265,7 +279,7 @@ nav.bottom svg{width:21px; height:21px}
 .kv div{display:flex; gap:12px; padding:9px 12px; font-size:13.5px; border-top:1px solid var(--line2)}
 .kv div:first-child{border-top:0}
 .kv dt{flex:none; width:104px; color:var(--zinc); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:600; padding-top:2px}
-.kv dd{margin:0; text-transform:capitalize; overflow-wrap:anywhere}
+.kv dd{margin:0; overflow-wrap:anywhere}
 .kv dd.raw{text-transform:none; font-family:var(--f-mono); font-size:12.5px}
 h4.sec{font-family:var(--f-display); font-size:11.5px; text-transform:uppercase; letter-spacing:.09em;
   color:var(--zinc); margin:0 0 10px; font-weight:700}
@@ -316,6 +330,7 @@ footer p{margin:0 0 6px}
 .rp{flex:none; border:1px solid var(--line); background:var(--card); border-radius:9px;
   padding:6px 11px; min-height:36px; font-family:var(--f-mono); font-size:12.5px; font-weight:600; color:var(--ink2)}
 .rp[aria-pressed="true"]{background:var(--teal); border-color:var(--teal); color:#fff}
+.dayacts{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:0 0 12px}
 .dayprog{height:7px; background:var(--line2); border:1px solid var(--line); border-radius:99px;
   overflow:hidden; margin:0 0 14px}
 .dayprog i{display:block; height:100%; background:var(--teal); transition:width .3s ease}
@@ -340,6 +355,25 @@ footer p{margin:0 0 6px}
 .timer button{border:1px solid rgba(255,255,255,.28); background:transparent; color:inherit;
   border-radius:9px; min-width:38px; height:38px; padding:0 7px; font-size:12px; font-weight:600; flex:none}
 @media (min-width:761px){ .timer{bottom:0; left:auto; width:min(420px,92vw); right:16px; bottom:16px; border-radius:14px} }
+
+/* ---------- búsquedas rápidas ---------- */
+.quick{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;
+  margin:0 -15px 4px; padding:2px 15px 10px}
+.quick::-webkit-scrollbar{display:none}
+.qchip{flex:none; border:1px solid var(--line); background:var(--card); color:var(--ink2);
+  border-radius:99px; padding:7px 13px; font-size:12.5px; font-weight:600; min-height:36px;
+  white-space:nowrap; transition:.12s}
+.qchip:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ---------- historial ---------- */
+.hcard{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:13px 14px; box-shadow:var(--shadow)}
+.hcard h3{font-size:15px}
+.hcard .hrows{margin-top:9px; border-top:1px solid var(--line2); padding-top:8px}
+.hcard .hrow{display:flex; gap:10px; align-items:baseline; font-size:12.5px; padding:3px 0}
+.hcard .hrow b{flex:1; min-width:0; font-weight:600; overflow-wrap:anywhere}
+.hcard .hrow span{flex:none; font-family:var(--f-mono); font-size:11.5px; color:var(--zinc)}
+.hcard .hdel{margin-top:9px}
 
 /* ---------- toast ---------- */
 .toast{position:fixed; left:50%; bottom:calc(var(--nav) + var(--sab) + 76px); transform:translate(-50%,14px);
@@ -395,13 +429,15 @@ footer p{margin:0 0 6px}
       <div class="search">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
         <input id="q" type="search" autocomplete="off" aria-label="Buscar">
-        <button class="xbtn" id="qClear" hidden aria-label="x">×</button>
+        <button class="xbtn" id="qClear" hidden aria-label="Borrar la búsqueda">×</button>
       </div>
       <button class="fbtn" id="fToggle" aria-expanded="false">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
         <span id="fToggleTxt">Filtros</span><span class="badge" id="fBadge" hidden>0</span>
       </button>
     </div>
+
+    <div class="quick" id="quick"></div>
 
     <p class="lvl" id="lvlBp"></p>
     <div class="idx" id="idx" role="group"></div>
@@ -435,10 +471,24 @@ footer p{margin:0 0 6px}
     <div class="source" style="border:0;padding-top:14px">
       <button class="btn sm" id="btnNewRoutine">+ <span id="newRtxt">Nueva rutina</span></button>
       <button class="btn ghost sm" id="btnImport">Importar</button>
+      <button class="btn ghost sm" id="btnHist">Historial</button>
       <input type="file" id="impIn" accept=".json,application/json" hidden>
     </div>
     <div class="rlist" id="rlist"></div>
     <div class="empty" id="rEmpty" hidden></div>
+  </div>
+
+  <div class="wrap" id="histView" hidden>
+    <div class="source" style="border:0;padding-top:12px">
+      <button class="mini" id="btnHistBack">← Rutinas</button>
+      <button class="mini" id="btnHistExport">Exportar</button>
+      <button class="mini" id="btnHistClear" style="margin-left:auto;color:var(--red)">Vaciar</button>
+    </div>
+    <h2 style="font-size:24px;margin:6px 0 4px">Historial</h2>
+    <p class="rmeta" id="histSub" style="margin:0 0 14px"></p>
+    <div class="summary" id="histStats"></div>
+    <div class="rlist" id="histList" style="grid-template-columns:1fr"></div>
+    <div class="empty" id="histEmpty" hidden></div>
   </div>
 
   <div class="wrap" id="routineEditor" hidden>
@@ -452,6 +502,12 @@ footer p{margin:0 0 6px}
     <p class="rmeta" id="rSub" style="margin:0 0 14px"></p>
 
     <div class="daytabs" id="daytabs"></div>
+    <div class="dayacts">
+      <button class="mini" id="btnAddDay"></button>
+      <button class="mini" id="btnDupDay"></button>
+      <button class="mini" id="btnRenDay"></button>
+      <button class="mini" id="btnDelDay" style="margin-left:auto;color:var(--red)"></button>
+    </div>
     <div class="restrow" id="restRow"></div>
     <div class="summary" id="daySummary"></div>
     <div class="dayprog"><i id="dayProgFill" style="width:0%"></i></div>
@@ -460,9 +516,7 @@ footer p{margin:0 0 6px}
     <div class="dropzone" id="dayEmpty" hidden></div>
     <div class="field">
       <button class="btn" id="btnAddEx"></button>
-      <button class="btn ghost" id="btnAddDay"></button>
       <button class="btn ghost" id="btnResetDay"></button>
-      <button class="btn ghost" id="btnDelDay"></button>
     </div>
   </div>
 </section>
@@ -525,25 +579,25 @@ footer p{margin:0 0 6px}
     <div class="grab"></div>
     <div style="flex:1;min-width:0">
       <div class="mono" id="dId" style="font-size:11.5px;color:var(--zinc);letter-spacing:.08em"></div>
-      <h2 id="dName" style="font-size:19px;line-height:1.2;text-transform:capitalize;margin-top:3px"></h2>
+      <h2 id="dName" style="font-size:19px;line-height:1.2;margin-top:3px"></h2>
     </div>
-    <button class="close" id="dClose" aria-label="x">×</button>
+    <button class="close" id="dClose" aria-label="Cerrar la ficha">×</button>
   </div>
   <div class="sbody" id="dBody"></div>
   <div class="sfoot"><button class="btn" id="dAdd"></button></div>
 </aside>
-<div class="timer" id="timerBar" hidden>
+<div class="timer" id="timerBar" role="timer" aria-live="polite" hidden>
   <span class="prog" id="tProg"></span>
   <div style="flex:1;min-width:0">
     <div class="tn" id="tName"></div>
     <div class="tc" id="tClock">00:00</div>
   </div>
-  <button data-add="15">+15</button>
-  <button data-add="30">+30</button>
-  <button id="tPause" aria-label="pausa">II</button>
-  <button id="tStop" aria-label="parar">×</button>
+  <button data-add="15" aria-label="Añadir 15 segundos">+15</button>
+  <button data-add="30" aria-label="Añadir 30 segundos">+30</button>
+  <button id="tPause" aria-label="Pausar o reanudar el descanso">II</button>
+  <button id="tStop" aria-label="Parar el descanso">×</button>
 </div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
@@ -558,14 +612,357 @@ const CDN = "https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/";
 const LOCAL_PATHS = ["data/exercises.json", "exercises.json", "./data/exercises.json"];
 const LANG = "es";   /* la app trabaja solo en español */
 
+/* ==========================================================================
+   ESPAÑOL
+   El dataset original está íntegramente en inglés: nombres de ejercicio,
+   músculos, partes del cuerpo y equipamiento. Aquí se traduce todo y se
+   construye un índice de búsqueda que entiende cómo llamamos a las cosas
+   en el gimnasio ("press banca", "jalón al pecho", "elevaciones laterales").
+   ========================================================================== */
+
+const ES_BP = {
+  "back":"espalda", "cardio":"cardio", "chest":"pecho", "lower arms":"antebrazos",
+  "lower legs":"gemelos", "neck":"cuello", "shoulders":"hombros",
+  "upper arms":"brazos", "upper legs":"piernas", "waist":"core"
+};
+
+/* Sirve para `target`, `muscle_group` y `secondary_muscles`: los tres campos
+   usan el mismo vocabulario de músculos. */
+const ES_MUSCLE = {
+  "abductors":"abductores", "abs":"abdominales", "adductors":"aductores",
+  "biceps":"bíceps", "calves":"gemelos", "cardiovascular system":"sistema cardiovascular",
+  "delts":"deltoides", "deltoids":"deltoides", "forearms":"antebrazos",
+  "glutes":"glúteos", "hamstrings":"isquiotibiales", "lats":"dorsales",
+  "levator scapulae":"elevador de la escápula", "pectorals":"pectorales",
+  "quads":"cuádriceps", "quadriceps":"cuádriceps", "serratus anterior":"serrato anterior",
+  "spine":"erectores espinales", "traps":"trapecios", "trapezius":"trapecios",
+  "triceps":"tríceps", "upper back":"espalda alta", "lower back":"lumbares",
+  "rhomboids":"romboides", "obliques":"oblicuos", "core":"core",
+  "hip flexors":"flexores de cadera", "hip abductors":"abductores de cadera",
+  "hip adductors":"aductores de cadera", "shoulders":"hombros", "chest":"pecho",
+  "back":"espalda", "legs":"piernas", "grip":"agarre", "wrists":"muñecas",
+  "neck":"cuello", "soleus":"sóleo", "gastrocnemius":"gemelos",
+  "erector spinae":"erectores espinales", "abdominals":"abdominales",
+  "sternocleidomastoid":"esternocleidomastoideo", "brachialis":"braquial",
+  "brachioradialis":"braquiorradial", "latissimus dorsi":"dorsal ancho",
+  "pectoralis major":"pectoral mayor", "gluteus maximus":"glúteo mayor",
+  "gluteus medius":"glúteo medio", "tibialis anterior":"tibial anterior",
+  "cardiovascular":"cardiovascular", "full body":"cuerpo completo"
+};
+
+const ES_EQUIP = {
+  "assisted":"asistido", "band":"banda elástica", "barbell":"barra",
+  "body weight":"peso corporal", "bosu ball":"bosu", "cable":"polea",
+  "dumbbell":"mancuernas", "elliptical machine":"elíptica", "ez barbell":"barra Z",
+  "hammer":"martillo", "kettlebell":"kettlebell", "leverage machine":"máquina",
+  "medicine ball":"balón medicinal", "olympic barbell":"barra olímpica",
+  "resistance band":"banda de resistencia", "roller":"rodillo", "rope":"cuerda",
+  "skierg machine":"skierg", "sled machine":"prensa", "smith machine":"multipower",
+  "stability ball":"fitball", "stationary bike":"bicicleta estática",
+  "stepmill machine":"escaladora", "tire":"neumático", "trap bar":"barra hexagonal",
+  "upper body ergometer":"ergómetro de brazos", "weighted":"con peso",
+  "wheel roller":"rueda abdominal"
+};
+
+/* Equipamiento que en inglés va delante del nombre y en español va detrás:
+   "barbell bench press" → "press de banca con barra". */
+const EQ_PREFIX = {
+  "olympic barbell":"con barra olímpica", "ez barbell":"con barra Z", "ez bar":"con barra Z",
+  "trap bar":"con barra hexagonal", "smith machine":"en multipower", "smith":"en multipower",
+  "leverage machine":"en máquina", "lever":"en máquina", "cable":"en polea",
+  "barbell":"con barra", "dumbbell":"con mancuernas", "kettlebell":"con kettlebell",
+  "resistance band":"con banda", "band":"con banda", "medicine ball":"con balón medicinal",
+  "stability ball":"con fitball", "exercise ball":"con fitball", "bosu ball":"en bosu",
+  "sled":"en prensa", "wheel":"con rueda", "roller":"con rodillo", "rope":"con cuerda",
+  "weighted":"con peso", "assisted":"asistido", "machine":"en máquina",
+  "hammer":"en máquina hammer",
+  /* Estos no añaden información en español: el ejercicio ya se entiende. */
+  "body weight":"", "bodyweight":"", "self assisted":"autoasistido"
+};
+
+/* Frases de movimiento. Se aplican de la más larga a la más corta en una sola
+   pasada, así "romanian deadlift" gana a "deadlift". */
+const ES_PHRASE = {
+  "incline bench press":"press inclinado", "decline bench press":"press declinado",
+  "close grip bench press":"press de banca agarre cerrado", "bench press":"press de banca",
+  "floor press":"press en el suelo", "chest press":"press de pecho",
+  "shoulder press":"press militar", "military press":"press militar",
+  "overhead press":"press sobre la cabeza", "arnold press":"press arnold",
+  "push press":"push press", "french press":"press francés",
+  "lateral pulldown":"jalón al pecho", "lat pulldown":"jalón al pecho",
+  "pulldown":"jalón", "pull down":"jalón", "straight arm pulldown":"jalón con brazos rectos",
+  "pull up":"dominada", "pullup":"dominada", "chin up":"dominada supina",
+  "muscle up":"muscle up", "push up":"flexión", "pushup":"flexión",
+  "press up":"flexión", "sit up":"abdominal", "situp":"abdominal",
+  "leg raise":"elevación de piernas", "knee raise":"elevación de rodillas",
+  "calf raise":"elevación de talones", "lateral raise":"elevación lateral",
+  "side lateral raise":"elevación lateral", "front raise":"elevación frontal",
+  "rear delt raise":"elevación posterior", "rear lateral raise":"elevación posterior",
+  "rear delt row":"remo posterior", "rear delt":"deltoides posterior",
+  "full squat":"sentadilla profunda", "walking lunge":"zancada caminando",
+  "cable crossover":"cruce de poleas", "crossover":"cruce",
+  "chest dip":"fondo de pecho", "bench dip":"fondo en banco",
+  "reverse hyperextension":"hiperextensión invertida",
+  "seated calf raise":"elevación de talones sentado",
+  "wrist extension":"extensión de muñeca", "ab wheel":"rueda abdominal",
+  "battle rope":"cuerda de batalla", "rope climb":"trepa de cuerda",
+  "landmine":"landmine", "scapular":"escapular", "hip circle":"círculos de cadera",
+  "side bend":"flexión lateral", "pull apart":"pull apart", "bend":"flexión",
+  "sit up":"abdominal", "leg pull":"elevación de piernas", "toe touch":"toca punteras",
+  "windmill":"molino", "wiper":"limpiaparabrisas", "dead bug":"dead bug",
+  "bird dog":"bird dog", "superman":"superman", "hollow hold":"hollow hold",
+  "reverse fly":"aperturas invertidas", "rear delt fly":"aperturas invertidas",
+  "reverse flye":"aperturas invertidas", "chest fly":"aperturas de pecho",
+  "pec deck":"contractor de pecho", "fly":"aperturas", "flye":"aperturas",
+  "front squat":"sentadilla frontal", "hack squat":"sentadilla hack",
+  "split squat":"sentadilla búlgara", "bulgarian split squat":"sentadilla búlgara",
+  "sissy squat":"sentadilla sissy", "goblet squat":"sentadilla goblet",
+  "overhead squat":"sentadilla por encima de la cabeza", "squat":"sentadilla",
+  "romanian deadlift":"peso muerto rumano", "stiff leg deadlift":"peso muerto piernas rígidas",
+  "straight leg deadlift":"peso muerto piernas rígidas", "sumo deadlift":"peso muerto sumo",
+  "deadlift":"peso muerto",
+  "bent over row":"remo inclinado", "seated row":"remo sentado",
+  "upright row":"remo al mentón", "t bar row":"remo en T", "inverted row":"remo invertido",
+  "row":"remo", "shrug":"encogimiento de hombros",
+  "biceps curl":"curl de bíceps", "hammer curl":"curl martillo",
+  "preacher curl":"curl en banco scott", "concentration curl":"curl concentrado",
+  "spider curl":"curl araña", "drag curl":"curl drag", "wrist curl":"curl de muñeca",
+  "reverse curl":"curl invertido", "leg curl":"curl femoral", "curl":"curl",
+  "triceps extension":"extensión de tríceps", "triceps pushdown":"extensión de tríceps en polea",
+  "pushdown":"extensión en polea", "triceps dip":"fondo de tríceps",
+  "triceps kickback":"patada de tríceps", "kickback":"patada",
+  "skull crusher":"press francés", "leg extension":"extensión de cuádriceps",
+  "back extension":"extensión lumbar", "hip extension":"extensión de cadera",
+  "extension":"extensión",
+  "leg press":"prensa de piernas", "hip thrust":"hip thrust", "glute bridge":"puente de glúteos",
+  "hip abduction":"abducción de cadera", "hip adduction":"aducción de cadera",
+  "good morning":"buenos días", "hyperextension":"hiperextensión",
+  "face pull":"face pull", "pullover":"pullover", "dip":"fondo", "dips":"fondos",
+  "lunge":"zancada", "step up":"subida al cajón", "box jump":"salto al cajón",
+  "jumping jack":"salto de tijera", "mountain climber":"escalador",
+  "russian twist":"giro ruso", "plank":"plancha", "side plank":"plancha lateral",
+  "crunch":"crunch", "crunches":"crunches", "bicycle crunch":"crunch bicicleta",
+  "flutter kick":"tijeras", "scissor kick":"tijeras", "leg pull in":"elevación de rodillas",
+  "hanging leg raise":"elevación de piernas colgado",
+  "power clean":"cargada de potencia", "hang clean":"cargada colgante",
+  "clean and jerk":"cargada y envión", "clean":"cargada", "snatch":"arrancada",
+  "jerk":"envión", "thruster":"thruster", "burpee":"burpee", "swing":"swing",
+  "farmers walk":"paseo del granjero", "wood chop":"leñador", "chop":"leñador",
+  "run":"carrera", "walk":"caminata", "jump":"salto", "twist":"giro",
+  "stretch":"estiramiento", "raise":"elevación", "press":"press", "pull":"tirón",
+  "push":"empuje", "hold":"isométrico", "rotation":"rotación", "circle":"círculo",
+  "kick":"patada", "bridge":"puente", "roll out":"rueda abdominal",
+  "rollerout":"rueda abdominal", "rollout":"rueda abdominal",
+  /* modificadores multi-palabra */
+  "close grip":"agarre cerrado", "wide grip":"agarre ancho", "narrow grip":"agarre estrecho",
+  "neutral grip":"agarre neutro", "reverse grip":"agarre invertido",
+  "one arm":"a una mano", "single arm":"a una mano", "one leg":"a una pierna",
+  "single leg":"a una pierna", "behind neck":"tras nuca", "behind the neck":"tras nuca",
+  "bent over":"inclinado", "bent knee":"rodilla flexionada", "straight arm":"brazo recto",
+  "lying":"tumbado", "seated":"sentado", "standing":"de pie", "kneeling":"de rodillas",
+  "incline":"inclinado", "decline":"declinado", "reverse":"invertido",
+  "alternate":"alterno", "alternating":"alterno", "underhand":"agarre supino",
+  "overhand":"agarre prono", "overhead":"sobre la cabeza", "hanging":"colgado",
+  "side":"lateral", "front":"frontal", "rear":"posterior", "parallel":"paralelas",
+  "wide":"ancho", "narrow":"estrecho", "high":"alto", "low":"bajo",
+  "half":"medio", "full":"completo", "jumping":"con salto", "explosive":"explosivo",
+  "isometric":"isométrico", "static":"estático", "dynamic":"dinámico",
+  "self assisted":"autoasistido", "on knees":"de rodillas", "on floor":"en el suelo",
+  "walking":"caminando", "one leg":"a una pierna"
+};
+
+/* Palabras sueltas que no forman frase. */
+const ES_WORD = {
+  "and":"y", "with":"con", "to":"a", "the":"", "on":"en", "in":"en", "of":"de",
+  "chest":"pecho", "back":"espalda", "shoulder":"hombro", "shoulders":"hombros",
+  "leg":"pierna", "legs":"piernas", "arm":"brazo", "arms":"brazos",
+  "biceps":"bíceps", "triceps":"tríceps", "abs":"abdominales", "ab":"abdominal",
+  "glute":"glúteo", "glutes":"glúteos", "calf":"gemelo", "calves":"gemelos",
+  "hamstring":"isquiotibial", "hamstrings":"isquiotibiales", "quad":"cuádriceps",
+  "quads":"cuádriceps", "lat":"dorsal", "lats":"dorsales", "trap":"trapecio",
+  "traps":"trapecios", "delt":"deltoides", "delts":"deltoides", "hip":"cadera",
+  "hips":"caderas", "knee":"rodilla", "knees":"rodillas", "ankle":"tobillo",
+  "wrist":"muñeca", "wrists":"muñecas", "neck":"cuello", "spine":"columna",
+  "core":"core", "oblique":"oblicuo", "obliques":"oblicuos", "forearm":"antebrazo",
+  "forearms":"antebrazos", "thigh":"muslo", "waist":"cintura", "elbow":"codo",
+  "bench":"banco", "floor":"suelo", "wall":"pared", "bar":"barra", "ball":"balón",
+  "box":"cajón", "step":"escalón", "chair":"silla", "mat":"colchoneta",
+  "grip":"agarre", "stance":"postura", "degrees":"grados", "degree":"grados",
+  "left":"izquierda", "right":"derecha", "both":"ambos", "upper":"superior",
+  "lower":"inferior", "middle":"medio", "inner":"interno", "outer":"externo",
+  "cross":"cruzado", "crossover":"cruce", "close":"cerrado", "open":"abierto",
+  "up":"arriba", "down":"abajo", "out":"fuera", "over":"sobre", "under":"bajo",
+  "supported":"apoyado", "unsupported":"sin apoyo", "supine":"supino",
+  "prone":"prono", "vertical":"vertical", "horizontal":"horizontal",
+  "external":"externa", "internal":"interna", "single":"a una", "double":"doble",
+  "wide":"ancho", "twisting":"con giro", "circles":"círculos", "waiter":"camarero",
+  "zottman":"zottman", "scott":"scott", "spider":"araña", "sumo":"sumo",
+  "romanian":"rumano", "bulgarian":"búlgaro", "russian":"ruso", "olympic":"olímpico",
+  "reverse":"invertido", "resistance":"resistencia", "stretching":"estiramiento"
+};
+
+/* Modificadores en español que se empujan al final del nombre para que el
+   movimiento quede delante: "agarre cerrado dominada" → "dominada agarre cerrado". */
+const ES_MODS = ["agarre cerrado","agarre ancho","agarre estrecho","agarre neutro",
+  "agarre invertido","agarre supino","agarre prono","a una mano","a una pierna",
+  "tras nuca","sobre la cabeza","de rodillas","en el suelo","rodilla flexionada",
+  "brazo recto","asistido","autoasistido","tumbado","sentado","de pie","inclinado",
+  "declinado","invertido","alterno","colgado","con peso","con salto","explosivo",
+  "isométrico","estático","dinámico","apoyado","sin apoyo","paralelas","completo",
+  "medio","alto","bajo","izquierda","derecha","ambos"];
+
+/* --- construcción de los buscadores y reemplazadores --- */
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const byLen = o => Object.keys(o).sort((a,b) => b.length - a.length);
+const EQ_KEYS  = byLen(EQ_PREFIX);
+const PHRASE_RE = new RegExp("\\b(" + byLen(ES_PHRASE).map(reEsc).join("|") + ")\\b", "g");
+const MOD_RE    = new RegExp("\\b(" + ES_MODS.slice().sort((a,b)=>b.length-a.length).map(reEsc).join("|") + ")\\b", "g");
+
+const cap = s => { s = String(s ?? ""); return s ? s[0].toUpperCase() + s.slice(1) : ""; };
+
+/* Traduce un nombre de ejercicio del inglés. No aspira a ser literario: busca
+   ser reconocible y, sobre todo, encontrable. El nombre original se sigue
+   mostrando debajo y se indexa igual, así que nada se pierde por el camino. */
+function esName(en){
+  const raw = String(en ?? "").trim();
+  if (!raw) return "";
+  let s = " " + raw.toLowerCase().replace(/[-–—_]+/g, " ").replace(/\s+/g, " ").trim() + " ";
+  let tail = "";
+  for (const k of EQ_KEYS){
+    if (s.startsWith(" " + k + " ")){ s = " " + s.slice(k.length + 2); tail = EQ_PREFIX[k]; break; }
+  }
+  /* Las frases ya traducidas se aparcan tras un centinela para que el paso
+     siguiente, que traduce palabra a palabra, no las vuelva a tocar: sin esto
+     "hip thrust" acababa siendo "cadera thrust". */
+  const keep = [];
+  s = s.replace(PHRASE_RE, m => { keep.push(ES_PHRASE[m]); return " §" + (keep.length - 1) + "§ "; });
+  s = s.trim().split(/\s+/).map(w => (w in ES_WORD) ? ES_WORD[w] : w).join(" ");
+  s = s.replace(/§(\d+)§/g, (_, i) => keep[+i]);
+  const mods = [];
+  s = s.replace(MOD_RE, m => { mods.push(m); return " "; });
+  s = s.replace(/\s+/g, " ").trim();
+  /* "cable triceps pushdown" ya dice "en polea": no lo repitas al final. */
+  if (tail && (" " + s + " ").indexOf(" " + tail + " ") > -1) tail = "";
+  const out = [s, mods.join(" "), tail].join(" ").replace(/\s+/g, " ").trim();
+  return out || raw;
+}
+
+/* --- normalización para búsqueda: sin acentos, sin plurales, sin muletillas --- */
+const STOP = new Set(["de","del","la","el","los","las","al","a","con","en","y","o",
+  "para","por","un","una","the","of","with","to","and","on","in","sin"]);
+const norm = s => String(s ?? "").toLowerCase().normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s\/]+/g, " ")
+  .replace(/\s+/g, " ").trim();
+/* Stemmer mínimo: solo quita el plural. Se aplica igual a la consulta y al
+   índice, así que basta con que sea consistente. */
+function stem(w){
+  if (w.length > 4 && w.endsWith("es")) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith("s"))  return w.slice(0, -1);
+  return w;
+}
+const stemAll = s => norm(s).split(" ").filter(w => w && !STOP.has(w)).map(stem).join(" ");
+
+/* Sinónimos de gimnasio que no salen de la traducción literal. La clave se
+   prueba contra el nombre original en inglés. */
+const ALIAS = [
+  [/\b(lat|lateral) pull ?down\b/, "jalon al pecho jalon frontal dorsalera polea alta"],
+  [/\bpull ?down\b/, "jalon polea alta dorsalera"],
+  [/\bbench press\b/, "press banca banca pecho pectoral"],
+  [/\blateral raise\b/, "elevaciones laterales vuelos laterales hombro"],
+  [/\bfront raise\b/, "elevaciones frontales hombro"],
+  [/\brear (delt|lateral)\b/, "pajaros vuelos posteriores deltoides posterior"],
+  [/\b(shoulder|military|overhead) press\b/, "press militar press hombro press hombros"],
+  [/\bpush ?down\b/, "jalon triceps polea triceps extension triceps"],
+  [/\bskull ?crusher\b/, "press frances rompecraneos triceps"],
+  [/\bhip thrust\b/, "empuje de cadera gluteos"],
+  [/\bleg press\b/, "prensa prensa de piernas cuadriceps"],
+  [/\bcalf raise\b/, "gemelos elevacion de talones pantorrillas"],
+  [/\blunge\b/, "zancadas estocadas desplantes"],
+  [/\bdeadlift\b/, "peso muerto"],
+  [/\brow\b/, "remo espalda"],
+  [/\bcrunch\b/, "abdominales encogimientos crunch"],
+  [/\bsit ?up\b/, "abdominales"],
+  [/\bchin ?up\b/, "dominadas supinas dominadas"],
+  [/\bpull ?up\b/, "dominadas"],
+  [/\bpush ?up\b/, "flexiones lagartijas flexiones de brazos"],
+  [/\bdips?\b/, "fondos paralelas fondos en paralelas"],
+  [/\bshrug\b/, "encogimientos trapecio trapecios"],
+  [/\bupright row\b/, "remo al menton"],
+  [/\bpreacher\b/, "banco scott predicador"],
+  [/\bhammer curl\b/, "curl martillo"],
+  [/\bconcentration curl\b/, "curl concentrado"],
+  [/\bsquat\b/, "sentadillas cuadriceps piernas"],
+  [/\bgood morning\b/, "buenos dias lumbares"],
+  [/\bglute bridge\b/, "puente de gluteos"],
+  [/\b(fly|flye|pec deck)\b/, "aperturas contractor peck deck pecho"],
+  [/\bleg curl\b/, "curl femoral isquiotibiales femoral"],
+  [/\bleg extension\b/, "extension de cuadriceps cuadriceps camilla"],
+  [/\bplank\b/, "plancha isometrico core"],
+  [/\bpullover\b/, "pullover dorsales"],
+  [/\bface pull\b/, "face pull deltoides posterior"],
+  [/\bhyperextension|back extension\b/, "lumbares hiperextensiones banco romano"],
+  [/\bthrust|clean|snatch|jerk\b/, "halterofilia levantamiento olimpico"],
+  [/\brunning|treadmill|elliptical|bike|rowing\b/, "cardio aerobico"]
+];
+
+function buildIndex(x){
+  const en = String(x.name ?? "").toLowerCase();
+  let extra = "";
+  for (let i = 0; i < ALIAS.length; i++) if (ALIAS[i][0].test(en)) extra += " " + ALIAS[i][1];
+  return " " + stemAll([x._es, en, x._bp, x._tg, x._eq, x._mg, x._sm.join(" "),
+    x.body_part, x.category, x.target, x.equipment, x.muscle_group,
+    (x.secondary_muscles || []).join(" "), extra].join(" ")) + " ";
+}
+
+/* Añade a cada ejercicio sus campos en español y su índice de búsqueda. */
+function annotate(arr){
+  for (const x of arr){
+    const bp = x.body_part || x.category || "";
+    x._es = esName(x.name);
+    x._bp = ES_BP[bp] || bp;
+    x._tg = ES_MUSCLE[x.target] || x.target || "";
+    x._eq = ES_EQUIP[x.equipment] || x.equipment || "";
+    x._mg = ES_MUSCLE[x.muscle_group] || x.muscle_group || "";
+    x._sm = (x.secondary_muscles || []).map(m => ES_MUSCLE[m] || m);
+    x._s  = buildIndex(x);
+  }
+  return arr;
+}
+/* Quita los campos derivados antes de guardar en IndexedDB: se recalculan al
+   cargar y así la caché no engorda ni se queda con traducciones viejas. */
+function strip(arr){
+  return arr.map(x => { const o = {...x};
+    delete o._es; delete o._bp; delete o._tg; delete o._eq; delete o._mg;
+    delete o._sm; delete o._s; return o; });
+}
+
+/* Búsquedas rápidas para arrancar sin escribir. */
+const QUICK = ["press de banca","sentadilla","peso muerto","dominadas","jalón al pecho",
+  "elevaciones laterales","curl de bíceps","fondos","remo","prensa","press militar",
+  "abdominales","gemelos","aperturas","zancadas"];
+
+
 const T = {
  es:{dayrest:"Descanso del día",restset:"Descanso:",backtor:"← Volver a la rutina",setfmt:"Serie {n} de {m}",serie:"Serie",done_all:"Completo",progress:"Progreso",resetday:"Reiniciar",exdone:"Ejercicio completo",zeroed:"Series a cero",go:"Ir",ready:"¡Listo!",restlbl:"Descanso",muscle:"Músculo",cached:"Dataset guardado en el móvil",uncache:"Vaciar",uncached:"Caché vaciada", search:"Buscar ejercicios…",filters:"Filtros",equip:"Equipamiento",all_tg:"Todos los músculos",favs:"Favoritos",
   sort_id:"Orden: ID",sort_az:"Orden: A–Z",clear:"Limpiar",of:"de",results:"resultados",more:"Cargar más",
-  none:"Sin resultados",none_h:"Prueba con otro término o quita algún filtro.",
+  none:"Sin resultados",none_h:"Prueba con otro nombre (press banca, jalón al pecho, sentadilla) o quita algún filtro.",
   explore:"Explorar",routines:"Rutinas",setup:"Setup",steps:"Instrucciones paso a paso",
   nosteps:"Sin instrucciones en este idioma.",data:"Ficha",media:"Multimedia (solo metadata)",
   bp:"Parte",eq:"Equipo",tg:"Objetivo",mg:"Grupo muscular",sm:"Secundarios",cat:"Categoría",created:"Alta",
   copy:"Copiar",copied:"Copiado",json:"Registro JSON",demo:"Modo demo · 12 ejercicios",full:"Dataset completo",
+  enname:"Nombre original",kg:"Kg",hist:"Historial",lastt:"última",
+  sessions:"sesiones",volume:"volumen",finish:"Terminar sesión",
+  saved_s:"Sesión guardada en el historial",nohist:"Aún no hay sesiones",
+  nohist_h:"Marca series en una rutina y pulsa «Terminar sesión» para guardarla.",
+  clearh:"Vaciar historial",totalvol:"Volumen total",
+  confirm_fin:"¿Guardar esta sesión en el historial y poner las series a cero?",
+  min:"Min",km:"Km",seg:"Seg",start:"Empezar",hold:"Sostén",cardiolbl:"En marcha",
+  k_str:"Fuerza",k_iso:"Iso",k_car:"Cardio",kindsw:"Cambiar el tipo de ejercicio",
+  pacesw:"Cambiar entre km/h y min/km",cardio_t:"cardio",dist:"distancia",
+  alldays:"· Todos los días ·",dupday:"Duplicar día",renday:"Renombrar día",
+  copyof:"copia",addedall:"Añadido a los",noresolve:"sin encontrar",
+  imported:"Rutina importada",resolved:"ejercicios reconocidos",
+  findit:"Búscalo y añádelo con +",
   loading:"Cargando…",err:"No se pudo leer el archivo.",open:"Abrir exercises.json",gh:"Descargar de GitHub",
   sub:"ejercicios",addto:"Añadir a",newr:"Nueva rutina",routine:"Rutina",day:"Día",
   addex:"+ Añadir ejercicios",addday:"+ Día",delday:"Borrar día",rename:"Renombrar",export:"Exportar",
@@ -587,7 +984,8 @@ const uid = () => Math.random().toString(36).slice(2,9);
 
 const state = { data:[], byId:new Map(), full:false, media:"off",
   q:"", bp:[], eq:[], tgs:[], fav:false, sort:"id", shown:60,
-  routines:[], favs:[], curR:null, curD:0, view:"explore" };
+  routines:[], favs:[], curR:null, curD:0, view:"explore",
+  hist:[], histView:false, allDays:false, pace:"kmh" };
 
 /* ---------- almacenamiento: window.storage → localStorage → memoria ---------- */
 const Store = (() => {
@@ -606,7 +1004,7 @@ const Store = (() => {
     return { kind:"memory", async get(k){ return mem[k] ?? null; }, async set(k,v){ mem[k] = v; } };
   }
 })();
-const K = { routines:"idx:routines", favs:"idx:favs", prefs:"idx:prefs" };
+const K = { routines:"idx:routines", favs:"idx:favs", prefs:"idx:prefs", log:"idx:log" };
 
 /* IndexedDB para el dataset completo (17 MB: no cabe en localStorage) */
 const IDB = (() => {
@@ -650,6 +1048,7 @@ function persist(){
   saveTimer = setTimeout(() => {
     Store.set(K.routines, state.routines);
     Store.set(K.favs, state.favs);
+    Store.set(K.log, state.hist);
     Store.set(K.prefs, { media:state.media, curR:state.curR, curD:state.curD });
   }, 200);
 }
@@ -661,9 +1060,11 @@ function toast(msg){
 
 /* ==========================  DATOS  ========================== */
 async function boot(){
-  const [r, f, p] = await Promise.all([Store.get(K.routines), Store.get(K.favs), Store.get(K.prefs)]);
+  const [r, f, p, h] = await Promise.all([Store.get(K.routines), Store.get(K.favs),
+    Store.get(K.prefs), Store.get(K.log)]);
   if (Array.isArray(r)) state.routines = r;
   if (Array.isArray(f)) state.favs = f;
+  if (Array.isArray(h)) state.hist = h;
   if (p){ if (p.media) state.media = p.media;
     if (p.curR) state.curR = p.curR; if (typeof p.curD === "number") state.curD = p.curD; }
   const tsaved = await Store.get("idx:timer");
@@ -695,11 +1096,13 @@ function slim(arr){
 }
 function adopt(arr, full, cached){
   if (full && !cached) arr = slim(arr);
+  annotate(arr);
   state.data = arr; state.full = full; state.cached = !!(full && cached); state.shown = 60;
   state.byId = new Map(arr.map(e => [e.id, e]));
+  migrateItems();
   applyLang(); setSource(full ? "full" : "demo"); probeMedia();
   if (full && !cached){
-    IDB.set("dataset", { at:Date.now(), n:arr.length, data:arr })
+    IDB.set("dataset", { at:Date.now(), n:arr.length, v:2, data:strip(arr) })
        .then(ok => { if (ok){ state.cached = true; setSource("full"); } });
   }
 }
@@ -726,9 +1129,31 @@ $("#btnUncache").onclick = async () => {
   await IDB.del("dataset");
   adopt(DEMO, false); toast(t("uncached"));
 };
+/* Son 17 MB: sin ningún indicador el botón parecía colgado medio minuto.
+   Se muestran los megas que van llegando (no un porcentaje: GitHub sirve el
+   archivo comprimido, así que el content-length no cuadra con lo descargado). */
 $("#btnGh").onclick = async e => {
-  const b = e.currentTarget, old = b.textContent; b.textContent = t("loading"); b.disabled = true;
-  try{ const r = await fetch(RAW_URL); adopt(await r.json(), true); }
+  const b = e.currentTarget, old = b.textContent;
+  b.textContent = t("loading"); b.disabled = true;
+  try{
+    const r = await fetch(RAW_URL);
+    if (!r.ok) throw new Error("http " + r.status);
+    let txt;
+    if (r.body && r.body.getReader){
+      const rd = r.body.getReader(), parts = []; let got = 0;
+      for(;;){
+        const { done, value } = await rd.read();
+        if (done) break;
+        parts.push(value); got += value.length;
+        b.textContent = (got / 1048576).toFixed(1) + " MB";
+      }
+      const all = new Uint8Array(got); let at = 0;
+      for (const p of parts){ all.set(p, at); at += p.length; }
+      txt = new TextDecoder("utf-8").decode(all);
+    } else txt = await r.text();
+    b.textContent = t("loading");
+    adopt(JSON.parse(txt), true);
+  }
   catch(_){ setSource("err"); b.textContent = old; b.disabled = false; }
 };
 
@@ -744,18 +1169,24 @@ function setMedia(mode, quiet){
   render(); if (state.view === "routines") renderRoutines();
   if (!$("#sheet").hidden && detailId) openDetail(detailId, fromRoutine);
 }
-/* Local si las carpetas están junto al archivo; si no, CDN si hay red. */
+/* Local si las carpetas están junto al archivo; si no, CDN si hay red.
+   El modo Local guardado también se verifica: si publicaste la app sin las
+   carpetas images/ y videos/, antes te quedabas en Local con todo roto y sin
+   forma de que la app se diera cuenta sola. */
 function probeMedia(){
-  if (state.media !== "off") { setMedia(state.media, true); return; }
   const sample = (state.data[0] && state.data[0].image) || "images/0001-2gPfomN.jpg";
-  const local = new Image();
-  local.onload = () => setMedia("local", true);
-  local.onerror = () => {
+  if (state.media === "cdn"){ setMedia("cdn", true); return; }
+  const tryCdn = fallback => {
     const net = new Image();
     net.onload = () => setMedia("cdn", true);
+    net.onerror = () => { if (fallback) setMedia("off", true); };
     net.src = CDN + sample;
   };
-  local.src = sample;
+  const im = new Image();
+  const wasLocal = state.media === "local";
+  im.onload = () => setMedia("local", true);
+  im.onerror = () => tryCdn(wasLocal);
+  im.src = sample;
 }
 
 /* ==========================  FILTROS  ========================== */
@@ -767,15 +1198,18 @@ function buildFilters(){
   const max = Math.max(1, ...Object.values(counts));
   $("#idx").innerHTML = Object.entries(counts).sort((a,b) => b[1]-a[1]).map(([k,v]) =>
     '<button class="chip" aria-pressed="'+state.bp.includes(k)+'" data-bp="'+esc(k)+'">'+
-    '<span class="cl">'+esc(k)+'</span><span class="cn">'+nf(v)+'</span>'+
+    '<span class="cl">'+esc(ES_BP[k] || k)+'</span><span class="cn">'+nf(v)+'</span>'+
     '<span class="cb"><i style="width:'+Math.round(v/max*100)+'%"></i></span></button>').join("");
   $$("#idx .chip").forEach(c => c.onclick = () => {
     const k = c.dataset.bp;
     state.bp = state.bp.includes(k) ? state.bp.filter(x => x !== k) : [...state.bp, k];
     state.shown = 60; buildFilters(); render();
   });
-  $("#pEquip").innerHTML = uniq("equipment").map(v =>
-    '<button class="pill" data-eq="'+esc(v)+'" aria-pressed="'+state.eq.includes(v)+'">'+esc(v)+'</button>').join("");
+  $("#pEquip").innerHTML = uniq("equipment")
+    .map(v => [v, ES_EQUIP[v] || v])
+    .sort((a,b) => a[1].localeCompare(b[1], "es"))
+    .map(([v,l]) =>
+    '<button class="pill" data-eq="'+esc(v)+'" aria-pressed="'+state.eq.includes(v)+'">'+esc(l)+'</button>').join("");
   $$("#pEquip .pill").forEach(b => b.onclick = () => {
     const v = b.dataset.eq;
     state.eq = state.eq.includes(v) ? state.eq.filter(x => x !== v) : [...state.eq, v];
@@ -798,7 +1232,7 @@ function buildFilters(){
     const mmax = Math.max(...Object.values(mc));
     $("#idxMuscle").innerHTML = keys.sort((a,b) => mc[b]-mc[a]).map(k =>
       '<button class="chip m" aria-pressed="'+state.tgs.includes(k)+'" data-tg="'+esc(k)+'">'+
-      '<span class="cl">'+esc(k)+'</span><span class="cn">'+nf(mc[k])+'</span>'+
+      '<span class="cl">'+esc(ES_MUSCLE[k] || k)+'</span><span class="cn">'+nf(mc[k])+'</span>'+
       '<span class="cb"><i style="width:'+Math.round(mc[k]/mmax*100)+'%"></i></span></button>').join("");
     $$("#idxMuscle .chip").forEach(c => c.onclick = () => {
       const k = c.dataset.tg;
@@ -827,17 +1261,23 @@ $("#q").oninput = e => { clearTimeout(deb); const v = e.target.value; $("#qClear
 $("#qClear").onclick = () => { $("#q").value=""; $("#q").focus(); $("#qClear").hidden=true; state.q=""; render(); };
 
 /* ==========================  TARJETAS  ========================== */
+/* Cada palabra de la consulta debe aparecer al principio de alguna palabra
+   del índice. Consulta e índice pasan por el mismo normalizador (sin acentos,
+   sin plurales, sin "de"/"al"/"con"), así que "press banca", "PRESS DE BANCA"
+   y "presses bancas" encuentran lo mismo. */
 function match(){
   const q = state.q;
+  const toks = q ? stemAll(q).split(" ").filter(Boolean) : [];
+  const idq = /^\d{1,4}$/.test(q) ? q.padStart(4, "0") : null;
   const out = state.data.filter(x =>
     (!state.bp.length || state.bp.includes(x.body_part || x.category)) &&
     (!state.eq.length || state.eq.includes(x.equipment)) &&
     (!state.tgs.length || state.tgs.includes(x.target)) &&
     (!state.fav || state.favs.includes(x.id)) &&
-    (!q || x.name.toLowerCase().includes(q) || (x.target||"").toLowerCase().includes(q) ||
-      (x.equipment||"").toLowerCase().includes(q) || (x.muscle_group||"").toLowerCase().includes(q) ||
-      (x.secondary_muscles||[]).join(" ").toLowerCase().includes(q) || x.id === q));
-  return out.sort(state.sort === "az" ? (a,b) => a.name.localeCompare(b.name) : (a,b) => a.id.localeCompare(b.id));
+    (!toks.length || x.id === idq || toks.every(w => x._s.indexOf(" " + w) > -1)));
+  return out.sort(state.sort === "az"
+    ? (a,b) => a._es.localeCompare(b._es, "es")
+    : (a,b) => a.id.localeCompare(b.id));
 }
 let current = [];
 const ICON_STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>';
@@ -849,14 +1289,16 @@ function render(){
     const u = mediaUrl(x.image);
     return '<div class="card">'+
       '<div class="rail"><span>'+esc(x.id)+'</span></div>'+
-      '<button class="open" data-id="'+esc(x.id)+'"><h3>'+esc(x.name)+'</h3><div class="tags">'+
-        '<span class="tag a">'+esc(x.body_part||x.category)+'</span>'+
-        '<span class="tag b">'+esc(x.equipment)+'</span>'+
-        '<span class="tag c">'+esc(x.target)+'</span></div></button>'+
+      '<button class="open" data-id="'+esc(x.id)+'"><h3>'+esc(cap(x._es))+'</h3>'+
+        '<div class="en">'+esc(x.name)+'</div><div class="tags">'+
+        '<span class="tag a">'+esc(x._bp)+'</span>'+
+        '<span class="tag b">'+esc(x._eq)+'</span>'+
+        '<span class="tag c">'+esc(x._tg)+'</span></div></button>'+
       (u ? '<img class="thumb" loading="lazy" decoding="async" src="'+esc(u)+'" alt="" onerror="this.remove()">' : "")+
       '<div class="acts">'+
-        '<button class="iact plus" data-add="'+esc(x.id)+'" aria-label="+">'+ICON_PLUS+'</button>'+
-        '<button class="iact'+(state.favs.includes(x.id)?" on":"")+'" data-fav="'+esc(x.id)+'" aria-label="fav">'+ICON_STAR+'</button>'+
+        '<button class="iact plus" data-add="'+esc(x.id)+'" aria-label="Añadir a la rutina">'+ICON_PLUS+'</button>'+
+        '<button class="iact'+(state.favs.includes(x.id)?" on":"")+'" data-fav="'+esc(x.id)+'" aria-label="'+
+          (state.favs.includes(x.id)?"Quitar de favoritos":"Marcar como favorito")+'">'+ICON_STAR+'</button>'+
       '</div></div>';
   }).join("");
   $$("#grid .open").forEach(b => b.onclick = () => openDetail(b.dataset.id));
@@ -871,8 +1313,24 @@ function render(){
   $("#more").hidden = page.length >= current.length; $("#more").textContent = t("more");
   $("#empty").hidden = current.length > 0;
   $("#empty").innerHTML = '<h3>'+esc(t("none"))+'</h3><p>'+esc(t("none_h"))+'</p>';
+  renderQuick();
 }
 $("#more").onclick = () => { state.shown += 60; render(); };
+
+/* Atajos con los nombres que se usan de verdad en el gimnasio. Solo aparecen
+   con el buscador vacío, para no estorbar mientras se escribe. */
+function renderQuick(){
+  const host = $("#quick");
+  host.hidden = !!state.q;
+  if (state.q) return;
+  host.innerHTML = QUICK.map(v =>
+    '<button class="qchip" data-q="'+esc(v)+'">'+esc(v)+'</button>').join("");
+  $$("#quick .qchip").forEach(b => b.onclick = () => {
+    const v = b.dataset.q;
+    $("#q").value = v; $("#qClear").hidden = false;
+    state.q = v.toLowerCase(); state.shown = 60; render();
+  });
+}
 
 /* ==========================  RUTINAS  ========================== */
 function newRoutine(name){
@@ -887,20 +1345,187 @@ function touch(){ const r = getR(); if (r) r.updated = Date.now(); persist(); }
 function addToRoutine(exId){
   let r = getR();
   if (!r) r = newRoutine();
-  const d = r.days[Math.min(state.curD, r.days.length-1)] || r.days[0];
-  d.items.push({ uid:uid(), ex:exId, sets:3, reps:10, rest:(+d.rest || 90), done:0 });
-  touch(); syncTargetBar();
   const ex = state.byId.get(exId);
-  toast(t("added") + " " + d.name + (ex ? " · " + ex.name : ""));
+  const suf = ex ? " · " + cap(ex._es) : "";
+  /* Con «Todos los días» seleccionado, un toque en + lo mete en los seis. Es
+     lo que se necesita para la elíptica de calentamiento o la carrera final:
+     repetirlo día por día era el trabajo tonto que había que quitar. */
+  if (state.allDays){
+    r.days.forEach(d => d.items.push(newItem(exId, d)));
+    touch(); syncTargetBar();
+    toast(t("addedall") + " " + r.days.length + " " + t("days") + suf);
+    return;
+  }
+  const d = r.days[Math.min(state.curD, r.days.length-1)] || r.days[0];
+  d.items.push(newItem(exId, d));
+  touch(); syncTargetBar();
+  toast(t("added") + " " + d.name + suf);
 }
 function exOf(item){ return state.byId.get(item.ex) || null; }
 
+/* ---------- tipos de ejercicio ----------
+   No todo se mide en series por repeticiones. Correr 15 min a 10 km/h y una
+   plancha de 3×30 s no caben en «3×10 con 60 kg», así que cada ejercicio de la
+   rutina tiene un tipo y sus propios campos.
+     str · fuerza      series × reps × kg
+     iso · isométrico  series × segundos de sostén
+     car · cardio      minutos + distancia, con el ritmo derivado */
+const KINDS = ["str", "iso", "car"];
+const CARDIO_EQ = new Set(["elliptical machine","stationary bike","stepmill machine",
+  "skierg machine","upper body ergometer"]);
+const ISO_RE = /\b(plank|hold|isometric|wall sit|hollow|bridge hold|side bridge|hang)\b/;
+
+function kindOf(ex){
+  if (!ex) return "str";
+  if ((ex.body_part || ex.category) === "cardio" || CARDIO_EQ.has(ex.equipment)) return "car";
+  if (ISO_RE.test(String(ex.name || "").toLowerCase())) return "iso";
+  return "str";
+}
+/* Un ítem nuevo, con los valores por defecto de su tipo y, si ya lo entrenaste,
+   con tus últimos números en vez de una plantilla en blanco. */
+function newItem(exId, d){
+  const ex = state.byId.get(exId), lm = lastMark(exId);
+  const kind = (lm && lm.kind) || kindOf(ex);
+  const it = { uid:uid(), ex:exId, kind, rest:(+d.rest || 90), done:0 };
+  if (kind === "car"){ it.min = (lm && lm.min) || 15; it.km = (lm && lm.km) || 0; it.rest = 0; }
+  else if (kind === "iso"){ it.sets = 3; it.seg = (lm && lm.seg) || 30; it.kg = (lm && lm.kg) || 0; }
+  else { it.sets = 3; it.reps = (lm && lm.reps) || 10; it.kg = (lm && lm.kg) || 0; }
+  return it;
+}
+/* Rutinas creadas antes de que existieran los tipos: se les asigna uno en
+   cuanto hay dataset para saber qué es cada ejercicio. */
+function migrateItems(){
+  let cambiado = false;
+  state.routines.forEach(r => r.days.forEach(d => d.items.forEach(i => {
+    if (!i.kind){ i.kind = kindOf(state.byId.get(i.ex)); cambiado = true; }
+    if (i.kind === "car" && i.min == null){ i.min = 15; i.km = i.km || 0; cambiado = true; }
+    if (i.kind === "iso" && i.seg == null){ i.seg = 30; cambiado = true; }
+  })));
+  if (cambiado) persist();
+}
+
+/* ---------- ritmo ----------
+   La única fuente de verdad son los minutos y los kilómetros: velocidad y ritmo
+   se derivan de ellos, así nunca pueden contradecirse entre sí. */
+const kmh  = i => { const m = +i.min || 0, k = +i.km || 0; return (m > 0 && k > 0) ? k / (m / 60) : 0; };
+const minkm = i => { const m = +i.min || 0, k = +i.km || 0; return (m > 0 && k > 0) ? m / k : 0; };
+const dec = n => String(n).replace(".", ",");
+function paceTxt(i){
+  const v = kmh(i); if (!v) return "";
+  const p = minkm(i), mm = Math.floor(p), ss = Math.round((p - mm) * 60);
+  return dec(v.toFixed(1)) + " km/h · " + mm + ":" + String(ss).padStart(2,"0") + " min/km";
+}
+/* Cómo se resume un ejercicio hecho, según su tipo. */
+function markText(i){
+  if (i.kind === "car"){
+    const p = [];
+    if (+i.min) p.push(i.min + " min");
+    if (+i.km)  p.push(dec(i.km) + " km");
+    const v = kmh(i); if (v) p.push(dec(v.toFixed(1)) + " km/h");
+    return p.join(" · ");
+  }
+  if (i.kind === "iso") return (i.sets||0) + "×" + (i.seg||0) + " s" + (+i.kg ? " · " + i.kg + " kg" : "");
+  return (i.sets||0) + "×" + (i.reps||0) + (+i.kg ? " · " + i.kg + " kg" : "");
+}
+
+/* ---------- historial de sesiones ----------
+   Cada vez que se termina un día se guarda lo que se hizo de verdad: series
+   completadas, repeticiones y kilos. Es lo único que permite saber si estás
+   progresando, y hasta ahora "Reiniciar" lo borraba sin dejar rastro. */
+/* El volumen en kg solo tiene sentido para la fuerza; el cardio se resume en
+   minutos y kilómetros, que van aparte. */
+const volOf = s => s.items.reduce((n,i) =>
+  n + (i.kind === "car" ? 0 : (+i.sets||0) * (+i.reps||0) * (+i.kg||0)), 0);
+const minOf = s => s.items.reduce((n,i) => n + (i.kind === "car" ? (+i.min||0) : 0), 0);
+const kmOf  = s => s.items.reduce((n,i) => n + (i.kind === "car" ? (+i.km||0)  : 0), 0);
+
+function logSession(r, d){
+  const items = d.items.filter(i => (+i.done||0) > 0).map(i => {
+    const ex = exOf(i);
+    const o = { ex:i.ex, n: ex ? ex._es : (i.q || i.ex), kind: i.kind || "str" };
+    if (o.kind === "car"){ o.min = +i.min||0; o.km = +i.km||0; }
+    else if (o.kind === "iso"){ o.sets = Math.min(+i.done||0, +i.sets||0); o.seg = +i.seg||0; o.kg = +i.kg||0; }
+    else { o.sets = Math.min(+i.done||0, +i.sets||0); o.reps = +i.reps||0; o.kg = +i.kg||0; }
+    return o;
+  });
+  if (!items.length) return null;
+  const s = { id:uid(), at:Date.now(), rn:r.name, dn:d.name, items };
+  state.hist.unshift(s);
+  if (state.hist.length > 400) state.hist.length = 400;   // techo razonable
+  persist();
+  return s;
+}
+/* La última vez que hiciste este ejercicio, venga de la rutina que venga. */
+function lastMark(exId){
+  for (const s of state.hist) for (const it of s.items) if (it.ex === exId) return it;
+  return null;
+}
+function download(name, obj){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"}));
+  a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
 function renderRoutines(){
-  const editing = !!getR() && state.editing;
-  $("#routinesHome").hidden = editing; $("#routineEditor").hidden = !editing;
-  if (editing) renderEditor(); else renderHome();
+  const editing = !!getR() && state.editing && !state.histView;
+  $("#histView").hidden = !state.histView;
+  $("#routinesHome").hidden = state.histView || editing;
+  $("#routineEditor").hidden = state.histView || !editing;
+  if (state.histView) renderHist();
+  else if (editing) renderEditor();
+  else renderHome();
   syncTargetBar();
 }
+
+function renderHist(){
+  const h = state.hist;
+  $("#histEmpty").hidden = h.length > 0;
+  $("#histEmpty").innerHTML = '<h3>'+esc(t("nohist"))+'</h3><p>'+esc(t("nohist_h"))+'</p>';
+  const sets = h.reduce((n,s) => n + s.items.reduce((m,i) => m + (+i.sets||0), 0), 0);
+  const vol  = h.reduce((n,s) => n + volOf(s), 0);
+  const tmin = h.reduce((n,s) => n + minOf(s), 0);
+  const tkm  = h.reduce((n,s) => n + kmOf(s), 0);
+  $("#histSub").textContent = h.length
+    ? t("lastup") + " " + new Date(h[0].at).toLocaleDateString("es") : "";
+  $("#histStats").innerHTML = h.length
+    ? '<div class="stat"><b>'+nf(h.length)+'</b><span>'+esc(t("sessions"))+'</span></div>'+
+      '<div class="stat"><b>'+nf(sets)+'</b><span>'+esc(t("tsets"))+'</span></div>'+
+      (vol ? '<div class="stat"><b>'+nf(Math.round(vol))+' kg</b><span>'+esc(t("totalvol"))+'</span></div>' : "")+
+      (tmin ? '<div class="stat"><b>'+nf(Math.round(tmin))+' min</b><span>'+esc(t("cardio_t"))+'</span></div>' : "")+
+      (tkm ? '<div class="stat"><b>'+esc(dec(tkm.toFixed(1)))+' km</b><span>'+esc(t("dist"))+'</span></div>' : "")
+    : "";
+  $("#histList").innerHTML = h.map(s => {
+    const ns = s.items.reduce((m,i) => m + (+i.sets||0), 0);
+    const v = volOf(s), sm = minOf(s), sk = kmOf(s);
+    const meta = [new Date(s.at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})];
+    if (ns) meta.push(ns + " " + t("tsets"));
+    if (v)  meta.push(nf(Math.round(v)) + " kg");
+    if (sm) meta.push(Math.round(sm) + " min");
+    if (sk) meta.push(dec(sk.toFixed(1)) + " km");
+    return '<div class="hcard"><h3>'+esc(s.rn)+' · '+esc(s.dn)+'</h3>'+
+      '<p class="rmeta">'+esc(meta.join(" · "))+'</p>'+
+      '<div class="hrows">'+s.items.map(i =>
+        '<div class="hrow"><b>'+esc(cap(i.n))+'</b><span>'+esc(markText(i))+'</span></div>').join("")+'</div>'+
+      '<div class="hdel"><button class="btn ghost sm" data-hdel="'+s.id+'">'+esc(t("del"))+'</button></div>'+
+      '</div>';
+  }).join("");
+  $$("#histList [data-hdel]").forEach(b => b.onclick = () => {
+    if (!confirm(t("confirm"))) return;
+    state.hist = state.hist.filter(x => x.id !== b.dataset.hdel); persist(); renderHist();
+  });
+}
+$("#btnHist").onclick = () => { state.histView = true; renderRoutines(); scrollTo({top:0}); };
+$("#btnHistBack").onclick = () => { state.histView = false; renderRoutines(); };
+$("#btnHistExport").onclick = () => {
+  if (!state.hist.length) return;
+  download("historial.json", { format:"idx-history/1",
+    exported:new Date().toISOString(), sessions:state.hist });
+};
+$("#btnHistClear").onclick = () => {
+  if (!state.hist.length || !confirm(t("confirm"))) return;
+  state.hist = []; persist(); renderHist(); toast(t("zeroed"));
+};
 function renderHome(){
   const list = state.routines;
   $("#rEmpty").hidden = list.length > 0;
@@ -949,8 +1574,100 @@ function renderEditor(){
     '<span class="dn">'+day.items.length+' '+esc(t("exs"))+'</span></button>').join("");
   $$("#daytabs .daytab").forEach(b => b.onclick = () => { state.curD = +b.dataset.day; persist(); renderEditor(); });
 
-  /* Descanso del día: un toque lo aplica a todos los ejercicios y queda como
-     valor por defecto para los que añadas después. */
+  refreshRest();
+  refreshDayStats();
+
+  $("#dragHint").textContent = d.items.length > 1 ? t("draghint") : "";
+  $("#dayEmpty").hidden = d.items.length > 0;
+  $("#dayEmpty").textContent = t("emptyday");
+  $("#items").innerHTML = d.items.map(i => {
+    const ex = exOf(i);
+    const u = ex ? mediaUrl(ex.image) : "";
+    const name = ex ? cap(ex._es) : (i.q ? cap(i.q) + " · " + t("noresolve") : i.ex + " " + t("noex"));
+    const sub = ex ? [ex._eq, ex._tg].filter(Boolean).join(" · ") : "";
+    const nsets = +i.sets || 0, ndone = Math.min(+i.done || 0, nsets);
+    const lm = lastMark(i.ex);
+    const last = lm ? '<div class="last">'+esc(t("lastt"))+' '+esc(markText(lm))+'</div>' : "";
+    return '<div class="item'+(nsets && ndone >= nsets ? " complete" : "")+'" data-uid="'+i.uid+'">'+
+      '<div class="handle" data-drag="'+i.uid+'" aria-label="Arrastrar para reordenar">'+
+        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></div>'+
+      '<div class="ib">' +
+        (ex ? '<button class="iopen" data-open="'+esc(ex.id)+'">'
+            : (i.q ? '<button class="iopen" data-find="'+esc(i.q)+'">' : '<div>')) +
+          '<div class="nm">'+esc(name)+
+            (ex ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>' : '')+
+          '</div>'+
+          '<div class="sub">'+esc(sub)+'</div>' +
+        (ex || i.q ? '</button>' : '</div>') + last +
+        '<div class="setrow">' + fieldsFor(i) + kindBtn(i) + '</div>' +
+        (i.kind === "car" ? '<div class="derived">'+esc(paceTxt(i))+'</div>' : "") +
+        setButton(i) + '</div>'+
+      (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" data-open="'+esc(ex ? ex.id : "")+'" onerror="this.remove()">' : "")+
+      '<button class="irm" data-rm="'+i.uid+'" aria-label="Quitar de la rutina">×</button></div>';
+  }).join("");
+  $$("#items [data-set]").forEach(b => b.onclick = () => tapSet(b.dataset.set));
+  $$("#items [data-open]").forEach(b => b.onclick = () => { if (b.dataset.open) openDetail(b.dataset.open, true); });
+  $$("#items [data-find]").forEach(b => b.onclick = () => {
+    const q = b.dataset.find;
+    $("#q").value = q; $("#qClear").hidden = false;
+    state.q = q.toLowerCase(); state.shown = 60; render();
+    switchView("explore"); toast(t("findit"));
+  });
+  $$("#items [data-rm]").forEach(b => b.onclick = () => {
+    d.items = d.items.filter(x => x.uid !== b.dataset.rm); touch(); renderEditor(); toast(t("removed"));
+  });
+  const FLOAT = new Set(["kg", "km", "pace"]);
+  $$("#items input[data-f]").forEach(inp => inp.onchange = () => {
+    const it = d.items.find(x => x.uid === inp.dataset.i); if (!it) return;
+    const f = inp.dataset.f;
+    const v = FLOAT.has(f)
+      ? Math.max(0, Math.round((parseFloat(inp.value) || 0) * 100) / 100)   // 2,5 kg existen
+      : Math.max(0, parseInt(inp.value, 10) || 0);
+    if (f === "pace"){
+      /* Editar el ritmo mueve la distancia, no los minutos: lo que se decide
+         antes de salir a correr es cuánto tiempo vas a estar fuera. */
+      const m = +it.min || 0;
+      if (v > 0 && m > 0) it.km = Math.round((state.pace === "minkm" ? m / v : v * m / 60) * 100) / 100;
+    } else {
+      it[f] = v;
+      if (f === "sets") it.done = Math.min(+it.done || 0, it.sets);
+    }
+    touch();
+    /* Refresco quirúrgico: repintar el editor entero aquí te robaba el foco
+       del campo que estabas editando y la posición del scroll. */
+    if (it.kind === "car"){ refreshCardio(it); refreshItem(it.uid); refreshDayStats(); }
+    else if (f === "sets" || f === "seg"){ refreshItem(it.uid); refreshDayStats(); }
+    else if (f === "rest") refreshRest();
+    else refreshDayStats();
+  });
+  $$("#items [data-kind]").forEach(b => b.onclick = () => {
+    const it = d.items.find(x => x.uid === b.dataset.kind); if (!it) return;
+    it.kind = KINDS[(KINDS.indexOf(it.kind || "str") + 1) % KINDS.length];
+    /* Rellena solo lo que falte para el tipo nuevo: si vuelves al anterior,
+       tus números siguen ahí. */
+    if (it.kind === "car"){ if (it.min == null) it.min = 15; if (it.km == null) it.km = 0; }
+    if (it.kind === "iso"){ if (!it.sets) it.sets = 3; if (it.seg == null) it.seg = 30; }
+    if (it.kind === "str"){ if (!it.sets) it.sets = 3; if (!it.reps) it.reps = 10; }
+    it.done = 0;
+    touch(); renderEditor();
+  });
+  $$("#items [data-pace]").forEach(l => l.onclick = () => {
+    state.pace = state.pace === "kmh" ? "minkm" : "kmh"; persist(); renderEditor();
+  });
+  attachDrag();
+  $("#btnAddEx").textContent = t("addex");
+  $("#btnAddDay").textContent = t("addday");
+  $("#btnDupDay").textContent = t("dupday");
+  $("#btnRenDay").textContent = t("renday");
+  $("#btnResetDay").textContent = t("finish");
+  $("#btnDelDay").textContent = t("delday");
+  $("#btnDelDay").disabled = r.days.length <= 1;
+}
+/* Los tres refrescos parciales. Antes cualquier toque llamaba a renderEditor(),
+   que rehace todo el innerHTML de la lista: se perdía el scroll, el foco y el
+   estado de los inputs. Ahora solo se toca lo que cambia. */
+function refreshRest(){
+  const d = getD(); if (!d) return;
   const PRESETS = [45, 60, 90, 120, 180];
   const rests = d.items.map(i => +i.rest || 0);
   /* Solo se marca un preset si TODOS los ejercicios comparten ese descanso.
@@ -967,67 +1684,78 @@ function renderEditor(){
     touch(); renderEditor();
     toast(t("restset") + " " + v + "s" + (d.items.length ? " · " + d.items.length + " " + t("exs") : ""));
   });
-
+}
+function refreshDayStats(){
+  const d = getD(); if (!d) return;
   const bySets = {};
+  const dmin = d.items.reduce((n,i) =>
+    n + (i.kind === "car" && (+i.done||0) > 0 ? (+i.min||0) : 0), 0);
+  const dkm  = d.items.reduce((n,i) =>
+    n + (i.kind === "car" && (+i.done||0) > 0 ? (+i.km||0)  : 0), 0);
   d.items.forEach(i => { const ex = exOf(i); if (!ex) return;
-    const k = ex.body_part || ex.category; bySets[k] = (bySets[k]||0) + (+i.sets||0); });
-  const totalSets = d.items.reduce((n,i) => n + (+i.sets||0), 0);
-  const doneSets  = d.items.reduce((n,i) => n + Math.min(+i.done||0, +i.sets||0), 0);
+    const k = ex._bp || ex.body_part || ex.category; bySets[k] = (bySets[k]||0) + (+i.sets||0); });
+  /* El cardio cuenta como una unidad hecha o no hecha: no tiene series. */
+  const totalSets = d.items.reduce((n,i) => n + (i.kind === "car" ? 1 : (+i.sets||0)), 0);
+  const doneSets  = d.items.reduce((n,i) => n + (i.kind === "car"
+    ? ((+i.done||0) > 0 ? 1 : 0) : Math.min(+i.done||0, +i.sets||0)), 0);
+  const volume = d.items.reduce((n,i) => n + (i.kind === "car" ? 0
+    : Math.min(+i.done||0, +i.sets||0) * (+i.reps||0) * (+i.kg||0)), 0);
   $("#dayProgFill").style.width = (totalSets ? doneSets/totalSets*100 : 0) + "%";
   $("#daySummary").innerHTML =
     '<div class="stat"><b>'+d.items.length+'</b><span>'+esc(t("exs"))+'</span></div>' +
     '<div class="stat"><b>'+doneSets+'/'+totalSets+'</b><span>'+esc(t("progress"))+'</span></div>' +
+    (volume ? '<div class="stat"><b>'+nf(Math.round(volume))+' kg</b><span>'+esc(t("volume"))+'</span></div>' : "") +
+    (dmin ? '<div class="stat"><b>'+Math.round(dmin)+' min</b><span>'+esc(t("cardio_t"))+'</span></div>' : "") +
+    (dkm ? '<div class="stat"><b>'+esc(dec(dkm.toFixed(1)))+' km</b><span>'+esc(t("dist"))+'</span></div>' : "") +
     Object.entries(bySets).sort((a,b) => b[1]-a[1]).map(([k,v]) =>
       '<div class="stat"><b>'+v+'</b><span>'+esc(k)+'</span></div>').join("");
-
-  $("#dragHint").textContent = d.items.length > 1 ? t("draghint") : "";
-  $("#dayEmpty").hidden = d.items.length > 0;
-  $("#dayEmpty").textContent = t("emptyday");
-  $("#items").innerHTML = d.items.map(i => {
-    const ex = exOf(i);
-    const u = ex ? mediaUrl(ex.image) : "";
-    const name = ex ? ex.name : i.ex + " " + t("noex");
-    const sub = ex ? [ex.equipment, ex.target].filter(Boolean).join(" · ") : "";
-    const nsets = +i.sets || 0, ndone = Math.min(+i.done || 0, nsets);
-    return '<div class="item'+(nsets && ndone >= nsets ? " complete" : "")+'" data-uid="'+i.uid+'">'+
-      '<div class="handle" data-drag="'+i.uid+'" aria-label="drag">'+
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></div>'+
-      '<div class="ib">' +
-        (ex ? '<button class="iopen" data-open="'+esc(ex.id)+'">' : '<div>') +
-          '<div class="nm">'+esc(name)+
-            (ex ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>' : '')+
-          '</div>'+
-          '<div class="sub">'+esc(sub)+'</div>' +
-        (ex ? '</button>' : '</div>') +
-        '<div class="setrow">'+
-          numBox(t("sets"), i.uid, "sets", i.sets) + numBox(t("reps"), i.uid, "reps", i.reps) + numBox(t("rest"), i.uid, "rest", i.rest) +
-        '</div>' + setButton(i) + '</div>'+
-      (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" data-open="'+esc(ex ? ex.id : "")+'" onerror="this.remove()">' : "")+
-      '<button class="irm" data-rm="'+i.uid+'" aria-label="x">×</button></div>';
-  }).join("");
-  $$("#items [data-set]").forEach(b => b.onclick = () => tapSet(b.dataset.set));
-  $$("#items [data-open]").forEach(b => b.onclick = () => { if (b.dataset.open) openDetail(b.dataset.open, true); });
-  $$("#items [data-rm]").forEach(b => b.onclick = () => {
-    d.items = d.items.filter(x => x.uid !== b.dataset.rm); touch(); renderEditor(); toast(t("removed"));
-  });
-  $$("#items input[data-f]").forEach(inp => inp.onchange = () => {
-    const it = d.items.find(x => x.uid === inp.dataset.i); if (!it) return;
-    it[inp.dataset.f] = Math.max(0, parseInt(inp.value,10) || 0); touch();
-    if (inp.dataset.f === "sets"){ it.done = Math.min(+it.done || 0, it.sets); touch(); }
-    /* series y descanso cambian el resumen y los presets del día: repintar */
-    if (inp.dataset.f === "sets" || inp.dataset.f === "rest") renderEditor();
-  });
-  attachDrag();
-  $("#btnAddEx").textContent = t("addex");
-  $("#btnAddDay").textContent = t("addday");
-  $("#btnResetDay").textContent = t("resetday");
-  $("#btnDelDay").textContent = t("delday");
-  $("#btnDelDay").disabled = r.days.length <= 1;
 }
+/* Al tocar minutos, kilómetros o ritmo hay que poner al día las otras dos
+   casillas y la línea derivada, pero sin reconstruir la fila: si la rehiciera
+   perderías el teclado abierto en mitad de la carga. */
+function refreshCardio(it){
+  const el = document.querySelector('#items .item[data-uid="' + it.uid + '"]'); if (!el) return;
+  const set = (f, v) => {
+    const n = el.querySelector('input[data-f="' + f + '"]');
+    if (n && document.activeElement !== n) n.value = v;
+  };
+  set("min", it.min ?? 0);
+  set("km",  it.km ?? 0);
+  const v = state.pace === "minkm" ? minkm(it) : kmh(it);
+  set("pace", v ? (state.pace === "minkm" ? v.toFixed(2) : v.toFixed(1)) : "");
+  const der = el.querySelector(".derived");
+  if (der) der.textContent = paceTxt(it);
+}
+function refreshItem(uidv){
+  const d = getD(); if (!d) return;
+  const it = d.items.find(x => x.uid === uidv); if (!it) return;
+  const el = document.querySelector('#items .item[data-uid="' + uidv + '"]'); if (!el) return;
+  const nsets = +it.sets || 0, ndone = Math.min(+it.done || 0, nsets);
+  el.classList.toggle("complete", !!(nsets && ndone >= nsets));
+  const old = el.querySelector(".setbtn"); if (!old) return;
+  const tmp = document.createElement("div"); tmp.innerHTML = setButton(it);
+  const fresh = tmp.firstElementChild;
+  old.replaceWith(fresh);
+  fresh.onclick = () => tapSet(uidv);
+}
+
 /* Botón de serie: cada toque cierra una serie y lanza el descanso.
    En la última serie no arranca cuenta atrás (no queda serie que esperar) y
    marca el ejercicio como completo; volver a tocarlo lo pone a cero. */
 function setButton(i){
+  if (i.kind === "car"){
+    /* Una carrera no se cierra por series: se hace o no se hace. El botón
+       arranca la cuenta atrás de los minutos planificados. */
+    const hecho = (+i.done || 0) > 0;
+    const mins = +i.min || 0;
+    const lbl = hecho ? t("done_all")
+      : t("start") + (mins ? " · " + fmt(mins * 60000) : "");
+    const ic = hecho
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 13l5 5L20 7"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>';
+    return '<button class="setbtn'+(hecho ? " full" : "")+'" data-set="'+i.uid+'">' +
+      '<span class="lbl">' + esc(lbl) + '</span>' + ic + '</button>';
+  }
   const sets = +i.sets || 0, done = Math.min(+i.done || 0, sets);
   const full = sets > 0 && done >= sets;
   const dots = sets > 0 && sets <= 10
@@ -1035,7 +1763,8 @@ function setButton(i){
         '<i class="'+(k < done ? "on" : "")+'"></i>').join("") + '</span>'
     : "";
   const label = full ? t("done_all")
-    : t("setfmt").replace("{n}", done+1).replace("{m}", sets);
+    : t("setfmt").replace("{n}", done+1).replace("{m}", sets) +
+      (i.kind === "iso" ? " · " + (+i.seg || 0) + " s" : "");
   const icon = full
     ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 13l5 5L20 7"/></svg>'
     : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>';
@@ -1045,18 +1774,75 @@ function setButton(i){
 function tapSet(uidv){
   const d = getD(); if (!d) return;
   const it = d.items.find(x => x.uid === uidv); if (!it) return;
+  const ex = exOf(it), nom = ex ? cap(ex._es) : (it.q ? cap(it.q) : "");
+
+  if (it.kind === "car"){
+    if ((+it.done || 0) > 0){
+      it.done = 0; touch(); refreshItem(uidv); refreshDayStats(); stopRest();
+      toast(t("zeroed")); return;
+    }
+    it.done = 1; touch(); refreshItem(uidv); refreshDayStats();
+    const mins = +it.min || 0;
+    if (mins > 0) startRest(mins * 60, nom + " · " + t("cardiolbl"));
+    else toast(t("exdone"));
+    return;
+  }
+
   const sets = +it.sets || 0, done = Math.min(+it.done || 0, sets);
   if (sets > 0 && done >= sets){                 // ya completo: reiniciar
-    it.done = 0; touch(); renderEditor(); toast(t("zeroed")); return;
+    it.done = 0; touch(); refreshItem(uidv); refreshDayStats(); stopRest();
+    toast(t("zeroed")); return;
   }
-  it.done = done + 1; touch(); renderEditor();
+  it.done = done + 1; touch(); refreshItem(uidv); refreshDayStats();
+
+  if (it.kind === "iso"){
+    /* Primero cronometra el sostén y, si quedan series, encadena solo con el
+       descanso: una plancha de 30 s no se mide a ojo. */
+    const seg = +it.seg || 30, rest = +it.rest || 0, ultimo = it.done >= sets;
+    startRest(seg, nom + " · " + t("hold"),
+      (!ultimo && rest > 0) ? { seconds: rest, label: nom + " · " + t("restlbl") } : null);
+    if (ultimo) toast(t("exdone"));
+    return;
+  }
+
   if (it.done >= sets){ stopRest(); toast(t("exdone")); return; }
-  const ex = exOf(it);
-  startRest(+it.rest || 60, (ex ? ex.name : "") + " · " + t("restlbl"));
+  startRest(+it.rest || 60, nom + " · " + t("restlbl"));
 }
-function numBox(label, uidv, field, val){
-  return '<span class="num"><label>'+esc(label)+'</label>'+
-    '<input type="number" inputmode="numeric" min="0" step="1" value="'+(val??0)+'" data-i="'+uidv+'" data-f="'+field+'"></span>';
+/* Cada tipo enseña lo suyo: nada de una casilla de kilos en una carrera. */
+function fieldsFor(i){
+  if (i.kind === "car")
+    return numBox(t("min"), i.uid, "min", i.min ?? 15) +
+           numBox(t("km"),  i.uid, "km",  i.km ?? 0, 0.1) + paceBox(i);
+  if (i.kind === "iso")
+    return numBox(t("sets"), i.uid, "sets", i.sets) +
+           numBox(t("seg"),  i.uid, "seg",  i.seg ?? 30) +
+           numBox(t("kg"),   i.uid, "kg",   i.kg, 2.5) +
+           numBox(t("rest"), i.uid, "rest", i.rest);
+  return numBox(t("sets"), i.uid, "sets", i.sets) + numBox(t("reps"), i.uid, "reps", i.reps) +
+         numBox(t("kg"),   i.uid, "kg",   i.kg, 2.5) + numBox(t("rest"), i.uid, "rest", i.rest);
+}
+/* La casilla de ritmo no guarda nada: muestra la velocidad que sale de los
+   minutos y los kilómetros. Si la editas, lo que se ajusta es la distancia.
+   Tocando la etiqueta cambia entre km/h y min/km. */
+function paceBox(i){
+  const unit = state.pace === "minkm" ? "min/km" : "km/h";
+  const v = state.pace === "minkm" ? minkm(i) : kmh(i);
+  const val = v ? (state.pace === "minkm" ? v.toFixed(2) : v.toFixed(1)) : "";
+  return '<span class="num pace"><label class="pl" data-pace="1" role="button" tabindex="0" '+
+    'title="'+esc(t("pacesw"))+'">'+unit+'</label>'+
+    '<input type="number" inputmode="decimal" min="0" step="0.1" value="'+val+
+    '" data-i="'+i.uid+'" data-f="pace" aria-label="'+unit+'"></span>';
+}
+function kindBtn(i){
+  return '<button class="kbtn" data-kind="'+i.uid+'" aria-label="'+esc(t("kindsw"))+
+    '">'+esc(t("k_" + (i.kind || "str")))+'</button>';
+}
+
+function numBox(label, uidv, field, val, step){
+  const dec = !!step && step !== 1;
+  return '<span class="num'+(dec ? " kg" : "")+'"><label>'+esc(label)+'</label>'+
+    '<input type="number" inputmode="'+(dec ? "decimal" : "numeric")+'" min="0" step="'+(step || 1)+
+    '" value="'+(val ?? 0)+'" data-i="'+uidv+'" data-f="'+field+'" aria-label="'+esc(label)+'"></span>';
 }
 $("#btnNewRoutine").onclick = () => {
   const name = prompt(t("newr"), t("routine") + " " + (state.routines.length + 1));
@@ -1075,9 +1861,79 @@ $("#btnDelRoutine").onclick = () => {
   state.curR = state.routines[0] ? state.routines[0].id : null;
   state.editing = false; persist(); renderRoutines();
 };
+/* ---------- nombres de día ----------
+   Al añadir o duplicar, el día nuevo hereda el patrón del anterior en vez de
+   llamarse siempre «Día N»:
+     Día 1                  → Día 2
+     Lunes                  → Martes
+     Domingo                → Lunes          (da la vuelta)
+     Lunes · Espalda        → Martes · Espalda
+     Push                   → Push 2
+   Y salta los nombres que ya existan, para no acabar con dos «Martes». */
+const DIAS_SEM = [
+  ["lunes",     /\blunes\b/i],
+  ["martes",    /\bmartes\b/i],
+  ["miércoles", /\bmi[eé]rcoles\b/i],
+  ["jueves",    /\bjueves\b/i],
+  ["viernes",   /\bviernes\b/i],
+  ["sábado",    /\bs[aá]bado\b/i],
+  ["domingo",   /\bdomingo\b/i]
+];
+function nextDayName(base, usados){
+  base = String(base || "").trim() || t("day");
+  const libre = n => !usados.some(u => norm(u) === norm(n));
+  const poner = (re, dia) => base.replace(re, m =>
+    m[0] === m[0].toUpperCase() ? cap(dia) : dia);
+
+  /* 1 · ¿lleva un día de la semana? Avanza al siguiente que esté libre. */
+  const i = DIAS_SEM.findIndex(([, re]) => re.test(base));
+  if (i > -1){
+    for (let k = 1; k <= 7; k++){
+      const cand = poner(DIAS_SEM[i][1], DIAS_SEM[(i + k) % 7][0]);
+      if (libre(cand)) return cand;
+    }
+    /* los siete están ocupados: sigue por la vía numérica */
+  }
+  /* 2 · ¿termina en número? Increméntalo hasta dar con uno sin usar. */
+  const m = base.match(/^(.*?)(\d+)(\D*)$/);
+  if (m){
+    for (let n = +m[2] + 1; n < +m[2] + 200; n++){
+      const cand = m[1] + n + m[3];
+      if (libre(cand)) return cand;
+    }
+  }
+  /* 3 · ni una cosa ni la otra: añade un número al final. */
+  for (let n = 2; n < 200; n++){
+    const cand = base + " " + n;
+    if (libre(cand)) return cand;
+  }
+  return base + " " + t("copyof");
+}
+
+/* «Jueves: repetir lunes» del plan, en un toque: copia el día actual entero,
+   con su calentamiento y su carrera ya en el orden correcto, y lo deja al lado
+   para cambiar solo lo que difiera. */
+$("#btnDupDay").onclick = () => {
+  const r = getR(), d = getD(); if (!r || !d) return;
+  const copia = JSON.parse(JSON.stringify(d));
+  copia.id = uid();
+  copia.name = nextDayName(d.name, r.days.map(x => x.name));
+  copia.items.forEach(i => { i.uid = uid(); i.done = 0; });
+  r.days.splice(state.curD + 1, 0, copia);
+  state.curD = state.curD + 1;
+  touch(); renderEditor(); syncTargetBar();
+  toast(t("dupday") + " · " + copia.items.length + " " + t("exs"));
+};
+$("#btnRenDay").onclick = () => {
+  const d = getD(); if (!d) return;
+  const n = prompt(t("renday"), d.name); if (n === null) return;
+  d.name = n.trim() || d.name;
+  touch(); renderEditor(); syncTargetBar();
+};
 $("#btnAddDay").onclick = () => {
   const r = getR(); if (!r) return;
-  r.days.push({ id:uid(), name:t("day") + " " + (r.days.length + 1), items:[] });
+  const ult = r.days[r.days.length - 1];
+  r.days.push({ id:uid(), name:nextDayName(ult && ult.name, r.days.map(x => x.name)), items:[] });
   state.curD = r.days.length - 1; touch(); renderEditor(); syncTargetBar();
 };
 $("#btnDelDay").onclick = () => {
@@ -1086,20 +1942,33 @@ $("#btnDelDay").onclick = () => {
   r.days.splice(state.curD, 1); state.curD = Math.max(0, state.curD - 1); touch(); renderEditor(); syncTargetBar();
 };
 $("#btnResetDay").onclick = () => {
-  const d = getD(); if (!d || !d.items.length) return;
-  if (!confirm(t("confirm"))) return;
-  d.items.forEach(i => i.done = 0); touch(); renderEditor(); stopRest(); toast(t("zeroed"));
+  const r = getR(), d = getD(); if (!r || !d || !d.items.length) return;
+  const done = d.items.reduce((n,i) => n + Math.min(+i.done||0, +i.sets||0), 0);
+  if (!confirm(done ? t("confirm_fin") : t("confirm"))) return;
+  const s = done ? logSession(r, d) : null;
+  d.items.forEach(i => i.done = 0); touch(); renderEditor(); stopRest();
+  toast(s ? t("saved_s") : t("zeroed"));
 };
 $("#btnAddEx").onclick = () => switchView("explore");
 $("#btnExport").onclick = () => exportRoutine(getR());
 function exportRoutine(r){
   if (!r) return;
-  const payload = { format:"idx-routine/1", exported:new Date().toISOString(),
-    source:"github.com/hasaneyldrm/exercises-dataset", routine:r };
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"}));
-  a.download = r.name.replace(/[^\w\-]+/g,"_").toLowerCase() + ".json";
-  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  download(r.name.replace(/[^\w\-]+/g,"_").toLowerCase() + ".json",
+    { format:"idx-routine/1", exported:new Date().toISOString(),
+      source:"github.com/hasaneyldrm/exercises-dataset", routine:r });
+}
+/* Un plan escrito a mano no conoce los IDs del dataset. Si el ítem trae `q`
+   en vez de `ex`, se resuelve buscándolo con el mismo índice que el buscador,
+   quedándose con el nombre más corto de los que encajan: el más genérico y
+   casi siempre el que se quería. Lo que no encaje se conserva con su texto,
+   visible y editable, en vez de desaparecer. */
+function resolveByName(q){
+  const toks = stemAll(q).split(" ").filter(Boolean);
+  if (!toks.length || !state.data.length) return null;
+  const hits = state.data.filter(x => toks.every(w => x._s.indexOf(" " + w) > -1));
+  if (!hits.length) return null;
+  hits.sort((a,b) => a._es.length - b._es.length || a.id.localeCompare(b.id));
+  return hits[0].id;
 }
 $("#btnImport").onclick = () => $("#impIn").click();
 $("#impIn").onchange = e => {
@@ -1110,10 +1979,26 @@ $("#impIn").onchange = e => {
       const j = JSON.parse(rd.result);
       const r = j.routine || j;
       if (!r || !Array.isArray(r.days)) throw 0;
-      r.id = uid(); r.updated = Date.now();
-      r.days.forEach(dd => { dd.id = uid(); (dd.items||[]).forEach(i => i.uid = uid()); });
-      state.routines.push(r); state.curR = r.id; state.curD = 0; persist();
-      state.editing = true; renderRoutines(); toast(t("dsaved"));
+      r.id = uid(); r.updated = Date.now(); r.created = r.created || Date.now();
+      let pedidos = 0, hallados = 0;
+      r.days.forEach(dd => {
+        dd.id = uid();
+        (dd.items || []).forEach(i => {
+          i.uid = uid();
+          i.done = 0;
+          if (!i.kind) i.kind = "str";
+          if (!i.ex && i.q){
+            pedidos++;
+            const id = resolveByName(i.q);
+            if (id){ i.ex = id; hallados++; }
+          }
+        });
+      });
+      state.routines.push(r); state.curR = r.id; state.curD = 0; state.allDays = false;
+      persist(); state.editing = true; renderRoutines();
+      toast(pedidos
+        ? t("imported") + " · " + hallados + "/" + pedidos + " " + t("resolved")
+        : t("imported"));
     }catch(_){ toast(t("err")); }
   };
   rd.readAsText(f, "utf-8");
@@ -1131,10 +2016,21 @@ function syncTargetBar(){
     '<option value="'+x.id+'"'+(x.id===r.id?" selected":"")+'>'+esc(x.name)+'</option>').join("");
   if (state.curD >= r.days.length) state.curD = 0;
   $("#tbDay").innerHTML = r.days.map((d,i) =>
-    '<option value="'+i+'"'+(i===state.curD?" selected":"")+'>'+esc(d.name)+' ('+d.items.length+')</option>').join("");
+    '<option value="'+i+'"'+(!state.allDays && i===state.curD?" selected":"")+'>'+esc(d.name)+' ('+d.items.length+')</option>').join("")
+    + (r.days.length > 1
+       ? '<option value="*"'+(state.allDays?" selected":"")+'>'+esc(t("alldays"))+'</option>' : "");
+  if (state.allDays && r.days.length < 2) state.allDays = false;
 }
-$("#tbRoutine").onchange = e => { state.curR = e.target.value; state.curD = 0; persist(); syncTargetBar(); };
-$("#tbDay").onchange = e => { state.curD = +e.target.value; persist(); syncTargetBar(); };
+$("#tbRoutine").onchange = e => {
+  state.curR = e.target.value; state.curD = 0; state.allDays = false;
+  persist(); syncTargetBar();
+};
+$("#tbDay").onchange = e => {
+  const v = e.target.value;
+  state.allDays = (v === "*");
+  if (!state.allDays) state.curD = +v;
+  persist(); syncTargetBar();
+};
 
 /* ==========================  ARRASTRE (puntero: ratón + dedo)  ========================== */
 let drag = null;
@@ -1256,13 +2152,14 @@ async function keepAwake(on){
     else if (!on && wake){ await wake.release(); wake = null; }
   }catch(_){ wake = null; }
 }
-function startRest(seconds, label){
+function startRest(seconds, label, next){
   if (!seconds || seconds < 1) return;
   try{ /* desbloquea el audio aprovechando este toque */
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === "suspended") actx.resume();
   }catch(_){}
-  timer = { end: Date.now() + seconds*1000, total: seconds*1000, left: null, label: label || t("restlbl"), done:false };
+  timer = { end: Date.now() + seconds*1000, total: seconds*1000, left: null,
+    label: label || t("restlbl"), done:false, next: next || null };
   keepAwake(true); persistTimer(); runTimer();
 }
 function runTimer(){
@@ -1286,6 +2183,12 @@ function paint(){
     $("#tName").textContent = t("ready");
     beep();
     try{ if (navigator.vibrate) navigator.vibrate([180,90,180,90,320]); }catch(_){}
+    /* Si había algo encadenado (sostén → descanso), arranca solo tras el pitido. */
+    if (timer.next){
+      const n = timer.next;
+      setTimeout(() => { if (timer && timer.done) startRest(n.seconds, n.label); }, 1800);
+      return;
+    }
     keepAwake(false);
     setTimeout(() => { if (timer && timer.done) stopRest(); }, 8000);
     return;
@@ -1307,11 +2210,17 @@ $("#tStop").onclick = stopRest;
 $$("#timerBar [data-add]").forEach(b => b.onclick = () => {
   if (!timer) return;
   const ms = (+b.dataset.add) * 1000;
-  if (timer.done){                      // reanuda desde cero si ya había terminado
-    timer.done = false; $("#timerBar").classList.remove("done"); timer.end = Date.now();
+  if (timer.done){
+    /* Ya había terminado: esto es una cuenta nueva, no una prórroga. Sumar al
+       total viejo dejaba la barra de progreso mintiendo el resto del descanso. */
+    timer.done = false; $("#timerBar").classList.remove("done");
+    timer.end = Date.now() + ms; timer.left = null; timer.total = ms;
+    keepAwake(true);
+  } else {
+    if (timer.left !== null) timer.left += ms; else timer.end += ms;
+    timer.total += ms;
   }
-  if (timer.left !== null) timer.left += ms; else timer.end += ms;
-  timer.total += ms; persistTimer(); runTimer();
+  persistTimer(); runTimer();
 });
 $("#tPause").onclick = () => {
   if (!timer || timer.done) return;
@@ -1328,10 +2237,12 @@ function openDetail(id, desdeRutina){
   fromRoutine = !!desdeRutina;
   const x = state.byId.get(id); if (!x) return;
   detailId = id; lastFocus = document.activeElement;
-  $("#dId").textContent = "ID " + x.id;
-  $("#dName").textContent = x.name;
+  $("#dId").textContent = "ID " + x.id + " · " + x.name;
+  $("#dName").textContent = cap(x._es);
+  /* Sin lookbehind: Safari no lo soportó hasta 16.4 y esto es una app de móvil. */
   const steps = (x.instruction_steps && (x.instruction_steps.es || x.instruction_steps.en)) ||
-    ((x.instructions && (x.instructions.es || x.instructions.en) || "").split(/(?<=\.)\s+/).filter(Boolean));
+    ((x.instructions && (x.instructions.es || x.instructions.en) || "")
+      .split(".").map(v => v.trim()).filter(Boolean).map(v => v + "."));
   const gif = mediaUrl(x.gif_url);
   const row = (k,v,raw) => v ? '<div><dt>'+esc(k)+'</dt><dd class="'+(raw?"raw":"")+'">'+esc(v)+'</dd></div>' : "";
   $("#dBody").innerHTML =
@@ -1341,8 +2252,9 @@ function openDetail(id, desdeRutina){
     (steps && steps.length ? '<ol class="steps">'+steps.map(s => '<li>'+esc(s)+'</li>').join("")+'</ol>'
       : '<p class="note">'+esc(t("nosteps"))+'</p>') +
     '<h4 class="sec">'+esc(t("data"))+'</h4><dl class="kv">' +
-      row(t("bp"), x.body_part||x.category) + row(t("eq"), x.equipment) + row(t("tg"), x.target) +
-      row(t("mg"), x.muscle_group) + row(t("sm"), (x.secondary_muscles||[]).join(", ")) +
+      row(t("bp"), x._bp) + row(t("eq"), x._eq) + row(t("tg"), x._tg) +
+      row(t("mg"), x._mg) + row(t("sm"), x._sm.join(", ")) +
+      row(t("enname"), x.name, true) +
       row(t("created"), (x.created_at||"").slice(0,10), true) + '</dl>' +
     '<h4 class="sec">'+esc(t("media"))+'</h4><dl class="kv">' +
       row("media_id", x.media_id, true) + row("image", x.image, true) +
@@ -1401,7 +2313,11 @@ function bindCopy(){
 }
 
 /* ==========================  NAVEGACIÓN E IDIOMA  ========================== */
+/* Cada pestaña recuerda dónde estabas. Volver de Rutinas a Explorar y
+   aparecer de nuevo arriba del todo obligaba a rebuscar el sitio cada vez. */
+const scrollMem = { explore:0, routines:0, setup:0 };
 function switchView(v){
+  if (state.view !== v) scrollMem[state.view] = window.scrollY || window.pageYOffset || 0;
   state.view = v;
   $$("[data-view]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === v)));
   $("#viewExplore").hidden = v !== "explore";
@@ -1409,7 +2325,7 @@ function switchView(v){
   $("#viewSetup").hidden = v !== "setup";
   if (v === "routines") renderRoutines();
   if (v === "explore") syncTargetBar();
-  scrollTo({top:0});
+  requestAnimationFrame(() => scrollTo({ top: scrollMem[v] || 0 }));
 }
 $$("[data-view]").forEach(b => b.onclick = () => switchView(b.dataset.view));
 $$("[data-media]").forEach(b => b.onclick = () => setMedia(b.dataset.media));
