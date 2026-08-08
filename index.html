@@ -348,21 +348,31 @@ footer p{margin:0 0 6px}
   border-radius:8px; min-height:30px; padding:3px 10px; display:inline-flex; align-items:center; gap:5px;
   font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em}
 .play svg{width:11px; height:11px}
-.timer{position:fixed; left:0; right:0; bottom:calc(var(--nav) + var(--sab)); z-index:70;
-  background:var(--ink); color:var(--paper); display:flex; align-items:center; gap:6px;
-  padding:11px 12px; box-shadow:var(--lift)}
-.timer .prog{position:absolute; left:0; top:0; height:3px; background:var(--teal); transition:width .25s linear}
-.timer .tn{flex:1; min-width:0; font-size:11.5px; opacity:.72; overflow:hidden; text-overflow:ellipsis;
+/* Cronómetro en línea: ocupa el sitio del botón de serie del ejercicio mientras
+   corre el descanso, y el del descanso manual del día. Al terminar, vuelve el
+   botón. Ya no hay barra fija abajo. */
+.tinline{position:relative; display:flex; align-items:center; gap:8px; box-sizing:border-box;
+  width:calc(100% - 24px); margin:0 12px 10px; padding:9px 12px; min-height:52px;
+  background:var(--ink); color:var(--paper); border:1px solid var(--ink); border-radius:10px; overflow:hidden}
+.tinline .tprog{position:absolute; left:0; top:0; height:3px; background:var(--teal); transition:width .25s linear}
+.tinline .tc{font-family:var(--f-mono); font-size:23px; font-weight:600; letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums; line-height:1; flex:none}
+.tinline .tn{flex:1; min-width:0; font-size:11px; opacity:.72; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; text-transform:capitalize}
-.timer .tc{font-family:var(--f-mono); font-size:26px; font-weight:600; letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums; line-height:1}
-.timer.done{background:var(--teal); color:#fff}
-.timer.done .tc{animation:pulse .6s ease-in-out 3}
+.tinline.done{background:var(--teal); border-color:var(--teal); color:#fff}
+.tinline.done .tc{animation:pulse .6s ease-in-out 3}
 @keyframes pulse{50%{opacity:.35}}
-@media (prefers-reduced-motion:reduce){ .timer.done .tc{animation:none} }
-.timer button{border:1px solid rgba(255,255,255,.28); background:transparent; color:inherit;
-  border-radius:9px; min-width:38px; height:38px; padding:0 7px; font-size:12px; font-weight:600; flex:none}
-@media (min-width:761px){ .timer{bottom:0; left:auto; width:min(420px,92vw); right:16px; bottom:16px; border-radius:14px} }
+@media (prefers-reduced-motion:reduce){ .tinline.done .tc{animation:none} }
+.tinline button{border:1px solid rgba(255,255,255,.28); background:transparent; color:inherit;
+  border-radius:9px; min-width:40px; height:40px; padding:0 7px; font-size:12px; font-weight:600; flex:none}
+#manualRest .tinline{margin:0; width:100%}
+/* Steppers -/+ para completar pesos y reps de un toque. */
+.num .nb{border:1px solid var(--line); background:var(--card); color:var(--ink2);
+  border-radius:7px; min-width:30px; height:36px; padding:0; font-size:17px; font-weight:600;
+  line-height:1; flex:none; display:inline-flex; align-items:center; justify-content:center}
+.num .nb:hover{border-color:var(--accent); color:var(--accent)}
+.ctimewrap{padding:0 12px 8px}
+.ctimewrap .play{font-size:11px}
 
 /* ==========================================================================
    RESPUESTA TÁCTIL
@@ -672,6 +682,7 @@ nav.bottom button:active{transform:scale(.92)}
       <button class="mini" id="btnDelDay" style="margin-left:auto;color:var(--red)"></button>
     </div>
     <div class="restrow" id="restRow"></div>
+    <div class="restrow" id="manualRest"></div>
     <div class="summary" id="daySummary"></div>
     <div class="dayprog"><i id="dayProgFill" style="width:0%"></i></div>
     <p class="hint" id="dragHint"></p>
@@ -679,6 +690,7 @@ nav.bottom button:active{transform:scale(.92)}
     <div class="dropzone" id="dayEmpty" hidden></div>
     <div class="field">
       <button class="btn" id="btnAddEx"></button>
+      <button class="btn ghost" id="btnAddFree"></button>
       <button class="btn ghost" id="btnResetDay"></button>
     </div>
   </div>
@@ -778,17 +790,8 @@ nav.bottom button:active{transform:scale(.92)}
   <div class="sbody" id="dBody"></div>
   <div class="sfoot"><button class="btn ghost" id="dHide"></button><button class="btn" id="dAdd"></button></div>
 </aside>
-<div class="timer" id="timerBar" role="timer" aria-live="polite" hidden>
-  <span class="prog" id="tProg"></span>
-  <div style="flex:1;min-width:0">
-    <div class="tn" id="tName"></div>
-    <div class="tc" id="tClock">00:00</div>
-  </div>
-  <button data-add="15" aria-label="Añadir 15 segundos">+15</button>
-  <button data-add="30" aria-label="Añadir 30 segundos">+30</button>
-  <button id="tPause" aria-label="Pausar o reanudar el descanso">II</button>
-  <button id="tStop" aria-label="Parar el descanso">×</button>
-</div>
+<!-- El cronómetro de descanso ya no es una barra fija: aparece en línea, en el
+     sitio del botón de serie del ejercicio (o del descanso manual del día). -->
 <div class="runbar" id="runBar" role="timer" aria-live="polite" hidden>
   <span class="prog" id="rbProg"></span>
   <div class="rb-l">
@@ -1181,7 +1184,10 @@ const T = {
   sets:"Series",reps:"Reps",rest:"Desc",exs:"ejercicios",tsets:"series",added:"Añadido a",
   moved:"Movido a",removed:"Eliminado",dsaved:"Guardado",confirm:"¿Seguro?",
   addhere:"Añadir a la rutina",days:"días",lastup:"Actualizada",nostore:"Sin almacenamiento: las rutinas no se guardarán al cerrar.",
-  stored:"Rutinas guardadas en este dispositivo.",noex:"(no cargado)"}
+  stored:"Rutinas guardadas en este dispositivo.",noex:"(no cargado)",
+  addfree:"+ Ejercicio libre",freeex:"Ejercicio",freeprompt:"Nombre del ejercicio",
+  renamex:"Renombrar ejercicio",addfreeq:"Añadir «{q}» como ejercicio libre",
+  restnow:"Descansar",ctime:"Cronometrar",markdone:"Marcar hecho",less15:"Quitar 15 segundos"}
 };
 const t = k => T.es[k] ?? k;   /* app en español */
 const $ = s => document.querySelector(s);
@@ -1327,7 +1333,13 @@ async function boot(){
   } else Store.set("idx:run", null);
 
   const tsaved = await Store.get("idx:timer");
-  if (tsaved && (tsaved.left !== null || tsaved.end > Date.now())){ timer = tsaved; runTimer(); }
+  if (tsaved && (tsaved.left !== null || tsaved.end > Date.now())){
+    timer = tsaved;
+    /* Cronómetros guardados antes de existir los sitios en línea: caen en el
+       descanso del día, para que siempre haya dónde verlos y pararlos. */
+    if (timer.owner == null) timer.owner = "__day__";
+    runTimer();
+  }
   else Store.set("idx:timer", null);
   setSource("loading");
   for (const path of LOCAL_PATHS){
@@ -1584,7 +1596,9 @@ function render(){
   $("#count").hidden = current.length === 0;
   $("#more").hidden = page.length >= current.length; $("#more").textContent = t("more");
   $("#empty").hidden = current.length > 0;
-  $("#empty").innerHTML = '<h3>'+esc(t("none"))+'</h3><p>'+esc(t("none_h"))+'</p>';
+  $("#empty").innerHTML = '<h3>'+esc(t("none"))+'</h3><p>'+esc(t("none_h"))+'</p>'+
+    (state.q ? '<button class="btn" id="addFreeQ">'+esc(t("addfreeq").replace("{q}", cap(state.q)))+'</button>' : '');
+  if (state.q){ const b = $("#addFreeQ"); if (b) b.onclick = () => addFree(state.q); }
   renderQuick();
 }
 $("#more").onclick = () => { state.shown += 60; render(); };
@@ -1633,6 +1647,20 @@ function addToRoutine(exId){
   d.items.push(newItem(exId, d));
   touch(); syncTargetBar();
   toast(t("added") + " " + d.name + suf);
+}
+/* Ejercicio libre: nombre propio, sin pasar por el dataset. Nace como fuerza
+   3×10; el tipo y los números se ajustan luego como en cualquier otro. */
+function newCustom(name, d){
+  return { uid:uid(), ex:"", q:name, custom:true, kind:"str",
+    rest:(+d.rest || 90), done:0, sets:3, reps:10, kg:0 };
+}
+function addFree(rawName){
+  let r = getR(); if (!r) r = newRoutine();
+  const name = (rawName || "").trim() || t("freeex");
+  const d = r.days[Math.min(state.curD, r.days.length-1)] || r.days[0];
+  d.items.push(newCustom(name, d));
+  touch(); syncTargetBar();
+  toast(t("added") + " " + d.name + " · " + cap(name));
 }
 function exOf(item){ return state.byId.get(item.ex) || null; }
 
@@ -1874,6 +1902,7 @@ function renderEditor(){
   $$("#daytabs .daytab").forEach(b => b.onclick = () => { state.curD = +b.dataset.day; persist(); renderEditor(); });
 
   refreshRest();
+  refreshManualRest();
   refreshDayStats();
 
   $("#dragHint").textContent = d.items.length > 1 ? t("draghint") : "";
@@ -1882,7 +1911,9 @@ function renderEditor(){
   $("#items").innerHTML = d.items.map(i => {
     const ex = exOf(i);
     const u = ex ? mediaUrl(ex.image) : "";
-    const name = ex ? cap(ex._es) : (i.q ? cap(i.q) + " · " + t("noresolve") : i.ex + " " + t("noex"));
+    const name = ex ? cap(ex._es)
+      : (i.custom ? cap(i.q || t("freeex"))
+      : (i.q ? cap(i.q) + " · " + t("noresolve") : i.ex + " " + t("noex")));
     const sub = ex ? [ex._eq, ex._tg].filter(Boolean).join(" · ") : "";
     const nsets = +i.sets || 0, ndone = Math.min(+i.done || 0, nsets);
     const lm = lastMark(i.ex);
@@ -1892,20 +1923,33 @@ function renderEditor(){
         '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></div>'+
       '<div class="ib">' +
         (ex ? '<button class="iopen" data-open="'+esc(ex.id)+'">'
-            : (i.q ? '<button class="iopen" data-find="'+esc(i.q)+'">' : '<div>')) +
+            : (i.custom ? '<button class="iopen" data-cedit="'+i.uid+'">'
+            : (i.q ? '<button class="iopen" data-find="'+esc(i.q)+'">' : '<div>'))) +
           '<div class="nm">'+esc(name)+
-            (ex ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>' : '')+
+            (ex ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>'
+             : (i.custom ? '<svg class="see" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>' : ''))+
           '</div>'+
           '<div class="sub">'+esc(sub)+'</div>' +
         (ex || i.q ? '</button>' : '</div>') + last +
         '<div class="setrow">' + fieldsFor(i) + kindBtn(i) + '</div>' +
         (i.kind === "car" ? '<div class="derived">'+esc(paceTxt(i))+'</div>' : "") +
+        (i.kind === "car" ? cardioTimeBtn(i) : "") +
         setButton(i) + '</div>'+
       (u ? '<img class="ithumb" src="'+esc(u)+'" alt="" loading="lazy" data-open="'+esc(ex ? ex.id : "")+'" onerror="this.remove()">' : "")+
       '<span class="irmwrap"><button class="irm" data-rm="'+i.uid+'" aria-label="Quitar de la rutina">×</button></span></div>';
   }).join("");
   $$("#items [data-set]").forEach(b => b.onclick = () => tapSet(b.dataset.set));
   $$("#items [data-open]").forEach(b => b.onclick = () => { if (b.dataset.open) openDetail(b.dataset.open, true); });
+  $$("#items [data-ctime]").forEach(b => b.onclick = () => {
+    const it = d.items.find(x => x.uid === b.dataset.ctime); if (!it) return;
+    const ex = exOf(it), nom = ex ? cap(ex._es) : (it.q ? cap(it.q) : "");
+    tap(); startRest((+it.min || 0) * 60, nom + " · " + t("cardiolbl"), null, it.uid);
+  });
+  $$("#items [data-cedit]").forEach(b => b.onclick = () => {
+    const it = d.items.find(x => x.uid === b.dataset.cedit); if (!it) return;
+    const n = prompt(t("renamex"), it.q || ""); if (n === null) return;
+    it.q = n.trim() || it.q; touch(); renderEditor();
+  });
   $$("#items [data-find]").forEach(b => b.onclick = () => {
     const q = b.dataset.find;
     $("#q").value = q; $("#qClear").hidden = false;
@@ -2039,27 +2083,44 @@ function refreshItem(uidv){
   const el = document.querySelector('#items .item[data-uid="' + uidv + '"]'); if (!el) return;
   const nsets = +it.sets || 0, ndone = Math.min(+it.done || 0, nsets);
   el.classList.toggle("complete", !!(nsets && ndone >= nsets));
-  const old = el.querySelector(".setbtn"); if (!old) return;
+  const old = el.querySelector(".setbtn, .tinline"); if (!old) return;
   const tmp = document.createElement("div"); tmp.innerHTML = setButton(it);
   const fresh = tmp.firstElementChild;
   old.replaceWith(fresh);
-  fresh.onclick = () => tapSet(uidv);
+  /* El botón dispara tapSet; el widget del cronómetro usa delegación. */
+  if (fresh.classList.contains("setbtn")) fresh.onclick = () => tapSet(uidv);
+  /* Mostrar u ocultar el botón de cronometrar cardio según corra o no. */
+  const cw = el.querySelector(".ctimewrap");
+  const wantCw = cardioTimeBtn(it);
+  if (cw && !wantCw) cw.remove();
+}
+/* Descanso manual del día: presets 60/90/120 que arrancan el cronómetro cuando
+   quieras, entre ejercicios. Si el cronómetro corre para el día, aquí va el
+   widget en su lugar. */
+function refreshManualRest(){
+  const host = $("#manualRest"); if (!host) return;
+  if (timer && timer.owner === "__day__"){ host.innerHTML = timerWidgetHTML(); return; }
+  const PRE = [60, 90, 120];
+  host.innerHTML = '<span class="rl">' + esc(t("restnow")) + '</span>' +
+    PRE.map(v => '<button class="rp" data-mrest="'+v+'">'+v+'s</button>').join("");
+  $$("#manualRest [data-mrest]").forEach(b => b.onclick = () => {
+    tap(); startRest(+b.dataset.mrest, t("restlbl"), null, "__day__");
+  });
 }
 
 /* Botón de serie: cada toque cierra una serie y lanza el descanso.
    En la última serie no arranca cuenta atrás (no queda serie que esperar) y
    marca el ejercicio como completo; volver a tocarlo lo pone a cero. */
 function setButton(i){
+  /* Si el descanso corre para ESTE ejercicio, el cronómetro ocupa el sitio del
+     botón. Al terminar, refreshItem vuelve a pintar el botón. */
+  if (timer && timer.owner === i.uid) return timerWidgetHTML();
   if (i.kind === "car"){
-    /* Una carrera no se cierra por series: se hace o no se hace. El botón
-       arranca la cuenta atrás de los minutos planificados. */
+    /* Una carrera no se cierra por series: un toque la marca hecha, otro la
+       reinicia. Sin cuenta atrás aquí; para cronometrar está el botón aparte. */
     const hecho = (+i.done || 0) > 0;
-    const mins = +i.min || 0;
-    const lbl = hecho ? t("done_all")
-      : t("start") + (mins ? " · " + fmt(mins * 60000) : "");
-    const ic = hecho
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 13l5 5L20 7"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>';
+    const lbl = hecho ? t("done_all") : t("markdone");
+    const ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 13l5 5L20 7"/></svg>';
     return '<button class="setbtn'+(hecho ? " full" : "")+'" data-set="'+i.uid+'">' +
       '<span class="lbl">' + esc(lbl) + '</span>' + ic + '</button>';
   }
@@ -2085,14 +2146,14 @@ function tapSet(uidv){
   tap();
 
   if (it.kind === "car"){
+    /* Cardio: un toque marca hecho, otro reinicia. Nada de cuenta atrás; para
+       cronometrar los minutos está el botón «Cronometrar» aparte. */
     if ((+it.done || 0) > 0){
-      it.done = 0; touch(); refreshItem(uidv); refreshDayStats(); stopRest();
+      it.done = 0; touch(); refreshItem(uidv); refreshDayStats();
       toast(t("zeroed")); return;
     }
     it.done = 1; touch(); refreshItem(uidv); refreshDayStats();
-    const mins = +it.min || 0;
-    if (mins > 0) startRest(mins * 60, nom + " · " + t("cardiolbl"));
-    else toast(t("exdone"));
+    toast(t("exdone"));
     return;
   }
 
@@ -2108,13 +2169,23 @@ function tapSet(uidv){
        descanso: una plancha de 30 s no se mide a ojo. */
     const seg = +it.seg || 30, rest = +it.rest || 0, ultimo = it.done >= sets;
     startRest(seg, nom + " · " + t("hold"),
-      (!ultimo && rest > 0) ? { seconds: rest, label: nom + " · " + t("restlbl") } : null);
+      (!ultimo && rest > 0) ? { seconds: rest, label: nom + " · " + t("restlbl") } : null, uidv);
     if (ultimo) toast(t("exdone"));
     return;
   }
 
   if (it.done >= sets){ stopRest(); toast(t("exdone")); return; }
-  startRest(+it.rest || 60, nom + " · " + t("restlbl"));
+  startRest(+it.rest || 60, nom + " · " + t("restlbl"), null, uidv);
+}
+/* Botón aparte para cronometrar el cardio: arranca la cuenta de los minutos
+   planificados, sin cerrar series. Solo aparece si hay minutos y no corre ya. */
+function cardioTimeBtn(i){
+  const mins = +i.min || 0;
+  if (mins <= 0 || (timer && timer.owner === i.uid)) return "";
+  const nom = (() => { const ex = exOf(i); return ex ? cap(ex._es) : (i.q ? cap(i.q) : ""); })();
+  return '<div class="ctimewrap"><button class="play" data-ctime="'+i.uid+'">'+
+    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>'+
+    esc(t("ctime")) + ' · ' + fmt(mins * 60000) + '</button></div>';
 }
 /* Cada tipo enseña lo suyo: nada de una casilla de kilos en una carrera. */
 function fieldsFor(i){
@@ -2147,11 +2218,33 @@ function kindBtn(i){
 }
 
 function numBox(label, uidv, field, val, step){
-  const dec = !!step && step !== 1;
+  const st = step || 1, dec = !!step && step !== 1;
   return '<span class="num'+(dec ? " kg" : "")+'"><label>'+esc(label)+'</label>'+
-    '<input type="number" inputmode="'+(dec ? "decimal" : "numeric")+'" min="0" step="'+(step || 1)+
-    '" value="'+(val ?? 0)+'" data-i="'+uidv+'" data-f="'+field+'" aria-label="'+esc(label)+'"></span>';
+    '<button class="nb" type="button" data-step="'+uidv+'" data-sf="'+field+'" data-sd="'+(-st)+'" aria-label="− '+esc(label)+'">−</button>'+
+    '<input type="number" inputmode="'+(dec ? "decimal" : "numeric")+'" min="0" step="'+st+
+    '" value="'+(val ?? 0)+'" data-i="'+uidv+'" data-f="'+field+'" aria-label="'+esc(label)+'">'+
+    '<button class="nb" type="button" data-step="'+uidv+'" data-sf="'+field+'" data-sd="'+st+'" aria-label="+ '+esc(label)+'">+</button></span>';
 }
+/* Los steppers y la escritura directa comparten esta misma aplicación. */
+function bumpField(uidv, f, delta){
+  const d = getD(); if (!d) return;
+  const it = d.items.find(x => x.uid === uidv); if (!it) return;
+  const cur = +it[f] || 0;
+  const v = Math.max(0, Math.round((cur + delta) * 100) / 100);
+  it[f] = v;
+  if (f === "sets") it.done = Math.min(+it.done || 0, it.sets);
+  touch();
+  const inp = document.querySelector('#items .item[data-uid="'+uidv+'"] input[data-f="'+f+'"]');
+  if (inp) inp.value = v;
+  if (it.kind === "car"){ refreshCardio(it); refreshItem(uidv); refreshDayStats(); }
+  else if (f === "sets" || f === "seg"){ refreshItem(uidv); refreshDayStats(); }
+  else if (f === "rest") refreshRest();
+  else refreshDayStats();
+}
+document.addEventListener("click", e => {
+  const s = e.target.closest("#items [data-step]"); if (!s) return;
+  bumpField(s.dataset.step, s.dataset.sf, +s.dataset.sd);
+});
 $("#btnNewRoutine").onclick = () => {
   const name = prompt(t("newr"), t("routine") + " " + (state.routines.length + 1));
   if (name === null) return;
@@ -2269,6 +2362,11 @@ $("#btnResetDay").onclick = () => {
   toast(s ? t("saved_s") : t("zeroed"));
 };
 $("#btnAddEx").onclick = () => switchView("explore");
+$("#btnAddFree").onclick = () => {
+  const n = prompt(t("freeprompt"), ""); if (n === null) return;
+  const name = n.trim(); if (!name) return;
+  state.editing = true; addFree(name); renderEditor();
+};
 $("#btnExport").onclick = () => exportRoutine(getR());
 function exportRoutine(r){
   if (!r) return;
@@ -2306,7 +2404,8 @@ $("#impIn").onchange = e => {
           i.uid = uid();
           i.done = 0;
           if (!i.kind) i.kind = "str";
-          if (!i.ex && i.q){
+          /* Los ejercicios libres conservan su nombre; no se buscan en el dataset. */
+          if (!i.ex && i.q && !i.custom){
             pedidos++;
             const id = resolveByName(i.q);
             if (id){ i.ex = id; hallados++; }
@@ -2471,41 +2570,69 @@ async function keepAwake(on){
     else if (!on && wake){ await wake.release(); wake = null; }
   }catch(_){ wake = null; }
 }
-function startRest(seconds, label, next){
+/* El descanso se muestra EN LÍNEA. `owner` dice dónde: el uid del ejercicio
+   cuyo botón de serie reemplaza mientras corre, o "__day__" para el descanso
+   manual del día. Al terminar, el botón vuelve. */
+function startRest(seconds, label, next, owner){
   if (!seconds || seconds < 1) return;
   try{ /* desbloquea el audio aprovechando este toque */
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === "suspended") actx.resume();
   }catch(_){}
+  const prev = timer ? timer.owner : null;
+  const own = owner != null ? owner : (timer ? timer.owner : null);
   timer = { end: Date.now() + seconds*1000, total: seconds*1000, left: null,
-    label: label || t("restlbl"), done:false, next: next || null };
-  keepAwake(true); persistTimer(); runTimer();
+    label: label || t("restlbl"), done:false, next: next || null, owner: own };
+  keepAwake(true); persistTimer();
+  if (prev != null && prev !== own) renderOwner(prev);   // el sitio anterior vuelve a su botón
+  runTimer();
+}
+function tWidget(){ return document.querySelector(".tinline"); }
+/* Repinta el sitio de un cronómetro (ejercicio o descanso del día): mostrará el
+   widget si le toca según el estado de `timer`, o volverá a su botón si no. */
+function renderOwner(owner){
+  if (owner == null) return;
+  if (owner === "__day__") refreshManualRest();
+  else refreshItem(owner);
+}
+function timerWidgetHTML(){
+  const rest = timer ? (timer.left !== null ? timer.left : timer.end - Date.now()) : 0;
+  const paused = timer && timer.left !== null;
+  const pct = timer && timer.total ? Math.min(100, (1 - rest/timer.total) * 100) : 0;
+  return '<div class="tinline'+(timer && timer.done ? " done" : "")+'" role="timer" aria-live="polite">'+
+    '<span class="tprog" id="tProg" style="width:'+pct+'%"></span>'+
+    '<span class="tc" id="tClock">'+fmt(rest)+'</span>'+
+    '<span class="tn" id="tName">'+esc(timer ? timer.label : "")+'</span>'+
+    '<button type="button" data-tadd="-15" aria-label="'+esc(t("less15"))+'">−15</button>'+
+    '<button type="button" data-tadd="15" aria-label="Añadir 15 segundos">+15</button>'+
+    '<button type="button" data-tpause id="tPause" aria-label="Pausar o reanudar el descanso">'+(paused ? "▶" : "II")+'</button>'+
+    '<button type="button" data-tstop aria-label="Parar el descanso">×</button>'+
+  '</div>';
 }
 function runTimer(){
   clearInterval(tick);
-  const bar = $("#timerBar");
-  bar.hidden = false;
-  $("#tName").textContent = timer.label;
-  $("#tPause").textContent = timer.left === null ? "II" : "▶";
+  renderOwner(timer ? timer.owner : null);
   paint();
   tick = setInterval(paint, 250);
 }
 function paint(){
   if (!timer) return;
-  const bar = $("#timerBar");
   const rest = timer.left !== null ? timer.left : timer.end - Date.now();
+  const w = tWidget();
   if (rest <= 0 && !timer.done){
     timer.done = true; clearInterval(tick);
-    bar.classList.add("done");
-    $("#tClock").textContent = "00:00";
-    $("#tProg").style.width = "100%";
-    $("#tName").textContent = t("ready");
+    if (w) w.classList.add("done");
+    const c = $("#tClock"), p = $("#tProg"), n = $("#tName");
+    if (c) c.textContent = "00:00";
+    if (p) p.style.width = "100%";
+    if (n) n.textContent = t("ready");
     beep();
     try{ if (navigator.vibrate) navigator.vibrate([180,90,180,90,320]); }catch(_){}
-    /* Si había algo encadenado (sostén → descanso), arranca solo tras el pitido. */
+    /* Si había algo encadenado (sostén → descanso), arranca solo tras el pitido,
+       en el mismo sitio (mismo owner). */
     if (timer.next){
-      const n = timer.next;
-      setTimeout(() => { if (timer && timer.done) startRest(n.seconds, n.label); }, 1800);
+      const nx = timer.next, ow = timer.owner;
+      setTimeout(() => { if (timer && timer.done) startRest(nx.seconds, nx.label, null, ow); }, 1800);
       return;
     }
     keepAwake(false);
@@ -2513,40 +2640,52 @@ function paint(){
     return;
   }
   if (timer.done) return;
-  $("#tClock").textContent = fmt(rest);
-  $("#tProg").style.width = Math.min(100, (1 - rest/timer.total) * 100) + "%";
+  const c = $("#tClock"), p = $("#tProg"), n = $("#tName");
+  if (c) c.textContent = fmt(rest);
+  if (p) p.style.width = Math.min(100, (1 - rest/timer.total) * 100) + "%";
+  if (n && n.textContent !== timer.label) n.textContent = timer.label;
 }
 function stopRest(){
-  clearInterval(tick); timer = null;
-  const bar = $("#timerBar");
-  bar.hidden = true; bar.classList.remove("done");
-  keepAwake(false); persistTimer();
+  clearInterval(tick);
+  const owner = timer ? timer.owner : null;
+  timer = null; keepAwake(false); persistTimer();
+  renderOwner(owner);         // vuelve el botón donde estaba el cronómetro
 }
 function persistTimer(){
   Store.set("idx:timer", timer && !timer.done ? timer : null);
 }
-$("#tStop").onclick = stopRest;
-$$("#timerBar [data-add]").forEach(b => b.onclick = () => {
+/* +15 / −15 / +? · un valor negativo recorta el descanso (sin bajar de 1 s). */
+function timerAdd(sec){
   if (!timer) return;
-  const ms = (+b.dataset.add) * 1000;
+  const ms = sec * 1000;
   if (timer.done){
-    /* Ya había terminado: esto es una cuenta nueva, no una prórroga. Sumar al
-       total viejo dejaba la barra de progreso mintiendo el resto del descanso. */
-    timer.done = false; $("#timerBar").classList.remove("done");
-    timer.end = Date.now() + ms; timer.left = null; timer.total = ms;
-    keepAwake(true);
-  } else {
-    if (timer.left !== null) timer.left += ms; else timer.end += ms;
-    timer.total += ms;
+    if (sec < 0) return;      // nada que recortar en una cuenta ya terminada
+    /* Ya había terminado: esto es una cuenta nueva, no una prórroga. */
+    timer.done = false; const w = tWidget(); if (w) w.classList.remove("done");
+    timer.end = Date.now() + ms; timer.left = null; timer.total = ms; keepAwake(true);
+    persistTimer(); runTimer(); return;
   }
+  let rem = timer.left !== null ? timer.left : timer.end - Date.now();
+  rem = Math.max(1000, rem + ms);
+  if (sec > 0) timer.total += ms;
+  if (rem > timer.total) timer.total = rem;
+  if (timer.left !== null) timer.left = rem; else timer.end = Date.now() + rem;
   persistTimer(); runTimer();
-});
-$("#tPause").onclick = () => {
+}
+function timerPause(){
   if (!timer || timer.done) return;
   if (timer.left === null){ timer.left = timer.end - Date.now(); keepAwake(false); }
   else { timer.end = Date.now() + timer.left; timer.left = null; keepAwake(true); }
   persistTimer(); runTimer();
-};
+}
+/* Controles del cronómetro por delegación: el widget se recrea en cada
+   repintado, así que no sirve enganchar sus botones una sola vez. */
+document.addEventListener("click", e => {
+  const add = e.target.closest("[data-tadd]");
+  if (add){ timerAdd(+add.dataset.tadd); return; }
+  if (e.target.closest("[data-tpause]")){ timerPause(); return; }
+  if (e.target.closest("[data-tstop]")){ stopRest(); return; }
+});
 /* al volver del segundo plano, repintar de inmediato */
 document.addEventListener("visibilitychange", () => { if (!document.hidden && timer) paint(); });
 
